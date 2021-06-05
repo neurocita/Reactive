@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
+    <Version>0.1.0</Version>
+    <PackageProjectUrl>https://github.com/neurocita/Reactive/</PackageProjectUrl>
+    <Company>Neurocita</Company>
+    <Authors>Neurocita</Authors>
+    <RepositoryType>Git</RepositoryType>
+    <RepositoryUrl>https://github.com/neurocita/Reactive/tree/main</RepositoryUrl>
+    <PackageTags>Neurocita Reactive Named Pipes Rx</PackageTags>
+    <Description>Reactive extensions enabling observables over named pipes</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.IO.Pipes.AccessControl" Version="5.0.0" />
+    <PackageReference Include="System.Reactive" Version="4.4.1" />
+  </ItemGroup>
+
+</Project>
