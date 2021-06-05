@@ -1,2 +1,2 @@
 # Reactive
-Reactive Extensions
+Reactive extensions enabling observables over named pipes
