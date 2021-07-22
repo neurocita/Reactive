@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <PackageProjectUrl>https://github.com/neurocita/Reactive</PackageProjectUrl>
     <Company>Neurocita</Company>
     <Authors>Neurocita</Authors>
@@ -18,6 +18,10 @@
   <ItemGroup>
     <PackageReference Include="System.IO.Pipes.AccessControl" Version="5.0.0" />
     <PackageReference Include="System.Reactive" Version="4.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Neurocita.Reactive\Neurocita.Reactive.csproj" />
   </ItemGroup>
 
 </Project>

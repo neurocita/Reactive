@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Neurocita.Reactive.Pipes
+namespace Neurocita.Reactive
 {
     public interface IDisposableObservable<T> : IObservable<T>, IDisposable
     {

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
+    <Version>0.1.0</Version>
+    <Authors>Neurocita</Authors>
+    <Description>Extensions and tools for reactive extensions</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/neurocita/Reactive</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/neurocita/Reactive</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>Neurocita Reactive Rx Observable</PackageTags>
+  </PropertyGroup>
+
+</Project>
