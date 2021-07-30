@@ -13,7 +13,7 @@ namespace Neurocita.Reactive
             return configuration.Create<T>(observable);
         }
 
-        internal static IObservable<IPipelineContext> AsPipeline<T>(this IObservable<T> observable, IRuntimeContext runtimeContext, ISerializer serializer, IDictionary<object, object> headers = null)
+        internal static IObservable<ITransportPipelineContext> AsPipeline<T>(this IObservable<T> observable, IRuntimeContext runtimeContext, ISerializer serializer, IDictionary<object, object> headers = null)
         {
             return observable.Select(instance => new TransportPipelineContext(runtimeContext, new TransportMessage(serializer.Serialize(instance), headers)));
         }
@@ -28,7 +28,7 @@ namespace Neurocita.Reactive
             return observable.Do(context => interceptor.Invoke(context));
         }
 
-        internal static IDisposable ToTransport(this IObservable<IPipelineContext> observable, ITransport transport)
+        internal static IDisposable ToTransport(this IObservable<ITransportPipelineContext> observable, ITransport transport)
         {
             return observable.Subscribe(transport);
         }

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Neurocita.Reactive
 {
-    internal class TransportPipelineContext: IPipelineContext
+    internal class TransportPipelineContext: ITransportPipelineContext
     {
         private readonly IRuntimeContext context;
         private readonly IMessage<Stream> message;

@@ -2,7 +2,7 @@
 
 namespace Neurocita.Reactive
 {
-    public interface ITransport : IObservable<IPipelineContext>, IObserver<IPipelineContext>, IDisposable
+    public interface ITransport : IObservable<ITransportPipelineContext>, IObserver<ITransportPipelineContext>, IDisposable
     {
 
     }
