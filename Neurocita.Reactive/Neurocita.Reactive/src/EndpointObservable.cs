@@ -2,9 +2,9 @@
 {
     public static class EndpointObservable
     {
-        public static IEndpoint<T> Create<T>(IEndpointConfiguration<T> configuration)
+        public static IEndpoint<T> FromEndpoint<T>(IEndpointConfiguration configuration)
         {
-            return configuration.Create();
+            return configuration.Create<T>();
         }
     }
 }

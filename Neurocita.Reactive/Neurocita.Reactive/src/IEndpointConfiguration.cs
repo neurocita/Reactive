@@ -1,8 +1,8 @@
 ﻿namespace Neurocita.Reactive
 {
-    public interface IEndpointConfiguration<T>
+    public interface IEndpointConfiguration
     {
         IServiceConfiguration Service { get; }
-        IEndpoint<T> Create();
+        IEndpoint<T> Create<T>();
     }
 }

@@ -2,7 +2,12 @@
 
 namespace Neurocita.Reactive
 {
-    public interface IEndpoint<T> : IObservable<T>, IObserver<T>, IDisposable
+    public interface IEndpoint
+    {
+
+    }
+
+    public interface IEndpoint<T> : IObservable<T>, IObserver<T>
     {
     }
 }
