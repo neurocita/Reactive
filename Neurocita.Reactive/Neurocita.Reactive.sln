@@ -9,7 +9,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.Pipes.Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neurocita.Reactive", "Neurocita.Reactive\Neurocita.Reactive.csproj", "{7E311CDC-1B0D-48EA-9379-0979EA406292}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.Amqp", "Neurocita.Reactive.Amqp\Neurocita.Reactive.Amqp.csproj", "{59ED163C-B795-4800-9970-66A913B9E6DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neurocita.Reactive.Amqp", "Neurocita.Reactive.Amqp\Neurocita.Reactive.Amqp.csproj", "{59ED163C-B795-4800-9970-66A913B9E6DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.Nats", "Neurocita.Reactive.Nats\Neurocita.Reactive.Nats.csproj", "{426590B8-A747-4A81-9130-4EF76F1E0486}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.Stomp", "Neurocita.Reactive.Stomp\Neurocita.Reactive.Stomp.csproj", "{9A489BD7-A55D-4D03-95F7-37A4588EC35D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.Mqtt", "Neurocita.Reactive.Mqtt\Neurocita.Reactive.Mqtt.csproj", "{BFB5FE50-A154-4BE4-A5EF-80CEED55E7E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.NetMq", "Neurocita.Reactive.NetMq\Neurocita.Reactive.NetMq.csproj", "{7296CDE8-60B2-43B0-BCEC-33DD5A5701FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +41,22 @@ Global
 		{59ED163C-B795-4800-9970-66A913B9E6DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59ED163C-B795-4800-9970-66A913B9E6DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59ED163C-B795-4800-9970-66A913B9E6DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{426590B8-A747-4A81-9130-4EF76F1E0486}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{426590B8-A747-4A81-9130-4EF76F1E0486}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{426590B8-A747-4A81-9130-4EF76F1E0486}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{426590B8-A747-4A81-9130-4EF76F1E0486}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A489BD7-A55D-4D03-95F7-37A4588EC35D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A489BD7-A55D-4D03-95F7-37A4588EC35D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A489BD7-A55D-4D03-95F7-37A4588EC35D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A489BD7-A55D-4D03-95F7-37A4588EC35D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFB5FE50-A154-4BE4-A5EF-80CEED55E7E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFB5FE50-A154-4BE4-A5EF-80CEED55E7E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFB5FE50-A154-4BE4-A5EF-80CEED55E7E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFB5FE50-A154-4BE4-A5EF-80CEED55E7E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7296CDE8-60B2-43B0-BCEC-33DD5A5701FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7296CDE8-60B2-43B0-BCEC-33DD5A5701FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7296CDE8-60B2-43B0-BCEC-33DD5A5701FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7296CDE8-60B2-43B0-BCEC-33DD5A5701FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
