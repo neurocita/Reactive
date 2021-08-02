@@ -6,16 +6,15 @@ namespace Neurocita.Reactive
     public class ObjectMessage<T> : IMessage<T>
     {
         public ObjectMessage(T body)
-            : this(null, body)
         {
 
         }
-        public ObjectMessage(IDictionary<object, object> headers, T body)
+        public ObjectMessage(T body, IDictionary<object, object> headers = null)
         {
             if (body == null)
                 throw new ArgumentNullException(nameof(body));
-            Headers = headers ?? new Dictionary<object, object>();
             Body = body;
+            Headers = headers ?? new Dictionary<object, object>();
         }
 
         public IDictionary<object, object> Headers { get; }

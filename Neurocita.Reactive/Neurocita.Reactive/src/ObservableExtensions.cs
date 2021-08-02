@@ -13,7 +13,22 @@ namespace Neurocita.Reactive
             return configuration.Create<T>(observable);
         }
 
-        internal static IObservable<ITransportPipelineContext> AsPipeline<T>(this IObservable<T> observable, IRuntimeContext runtimeContext, ISerializer serializer, IDictionary<object, object> headers = null)
+        internal static IObservable<IMessage<T>> AsObjectMessage<T>(this IObservable<T> observable, IDictionary<object, object> headers = null)
+        {
+            return observable.Select(instance => new ObjectMessage<T>(instance, headers));
+        }
+
+        internal static IObservable<IMessage<T>> AsObjectMessage<T>(this IObservable<ITransportPipelineContext> observable, IDeserializer deserializer)
+        {
+            return observable.Select(context => new ObjectMessage<T>(deserializer.Deserialize<T>(context.TransportMessage.Body), context.TransportMessage.Headers));
+        }
+
+        internal static IObservable<ITransportPipelineContext> AsTransportPipelineContext<T>(this IObservable<IMessage<T>> observable, IRuntimeContext runtimeContext, ISerializer serializer)
+        {
+            return observable.Select(message => new TransportPipelineContext(runtimeContext, new TransportMessage(serializer.Serialize(message.Body), message.Headers)));
+        }
+
+        internal static IObservable<ITransportPipelineContext> AsTransportPipelineContext<T>(this IObservable<T> observable, IRuntimeContext runtimeContext, ISerializer serializer, IDictionary<object, object> headers = null)
         {
             return observable.Select(instance => new TransportPipelineContext(runtimeContext, new TransportMessage(serializer.Serialize(instance), headers)));
         }

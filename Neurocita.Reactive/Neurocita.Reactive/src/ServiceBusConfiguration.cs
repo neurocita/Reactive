@@ -4,8 +4,11 @@ using System.Text;
 
 namespace Neurocita.Reactive
 {
-    public class ServiceBusConfiguration
+    public class ServiceBusConfiguration : IServiceBusConfiguration
     {
-        
+        public IServiceBus Create()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
