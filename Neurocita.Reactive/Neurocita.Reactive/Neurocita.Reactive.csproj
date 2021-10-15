@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DryIoc.Internal" Version="4.8.1" />
+    <PackageReference Include="DryIoc.Internal" Version="4.8.2" />
     <PackageReference Include="System.Reactive" Version="4.4.1" />
   </ItemGroup>
 

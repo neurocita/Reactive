@@ -5,13 +5,13 @@ namespace Neurocita.Reactive
 {
     internal class TransportMessage : IMessage<Stream>
     {
-        public TransportMessage(Stream body, IDictionary<object, object> headers = null)
+        public TransportMessage(Stream body, IDictionary<string, object> headers = null)
         {
             Body = body ?? new MemoryStream();
-            Headers = headers ?? new Dictionary<object, object>();
+            Headers = headers ?? new Dictionary<string, object>();
         }
 
-        public IDictionary<object, object> Headers { get; }
+        public IDictionary<string, object> Headers { get; }
         public Stream Body { get; }
     }
 }

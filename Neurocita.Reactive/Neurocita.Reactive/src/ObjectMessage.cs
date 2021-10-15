@@ -9,15 +9,15 @@ namespace Neurocita.Reactive
         {
 
         }
-        public ObjectMessage(T body, IDictionary<object, object> headers = null)
+        public ObjectMessage(T body, IDictionary<string, object> headers = null)
         {
             if (body == null)
                 throw new ArgumentNullException(nameof(body));
             Body = body;
-            Headers = headers ?? new Dictionary<object, object>();
+            Headers = headers ?? new Dictionary<string, object>();
         }
 
-        public IDictionary<object, object> Headers { get; }
+        public IDictionary<string, object> Headers { get; }
         public T Body { get; }
     }
 }

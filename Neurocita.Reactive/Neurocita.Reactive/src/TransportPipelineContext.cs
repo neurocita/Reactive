@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 
 namespace Neurocita.Reactive
 {
@@ -8,14 +7,13 @@ namespace Neurocita.Reactive
         private readonly IRuntimeContext context;
         private readonly IMessage<Stream> message;
 
-        public TransportPipelineContext(IRuntimeContext context, IMessage<Stream> messge)
+        public TransportPipelineContext(IRuntimeContext context, IMessage<Stream> message)
         {
             this.context = context;
-            this.message = messge;
+            this.message = message;
         }
 
-        public IMessage<Stream> TransportMessage => message;
-        public IDictionary<object, object> Properties => context.Properties;
-        public ILog Log => context.Log;
+        public IRuntimeContext Runtime => context;
+        public IMessage<Stream> Message => message;
     }
 }

@@ -4,7 +4,7 @@ namespace Neurocita.Reactive
 {
     public interface IMessage<T>
     {
-        IDictionary<object, object> Headers { get; }
+        IDictionary<string, object> Headers { get; }
         T Body { get; }
     }
 }
