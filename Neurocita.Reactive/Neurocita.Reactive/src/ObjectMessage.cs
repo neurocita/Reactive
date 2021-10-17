@@ -6,6 +6,7 @@ namespace Neurocita.Reactive
     public class ObjectMessage<T> : IMessage<T>
     {
         public ObjectMessage(T body)
+            : this(body, null)
         {
 
         }

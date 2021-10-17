@@ -8,6 +8,7 @@ namespace Neurocita.Reactive
 {
     public static class ObservableExtensions
     {
+        /*
         public static IEndpoint<T> ToEndpoint<T>(this IObservable<T> observable, IEndpointConfiguration configuration)
         {
             return configuration.Create<T>(observable);
@@ -42,7 +43,7 @@ namespace Neurocita.Reactive
         {
             return observable.Do(context => interceptor.Invoke(context));
         }
-
+        */
         //internal static IDisposable ToTransport(this IObservable<ITransportPipelineContext> observable, ITransport transport)
         //{
         //    return observable.Subscribe(transport);

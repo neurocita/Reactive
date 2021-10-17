@@ -8,8 +8,8 @@ namespace Neurocita.Reactive
         IRuntimeContext RuntimeContext { get; }
         ISerialization Serializable { get; }
         ITransport Transport { get; }
-        IEnumerable<Func<ITransportPipelineContext, ITransportPipelineContext>> InboundInterceptors { get; }
-        IEnumerable<Func<ITransportPipelineContext, ITransportPipelineContext>> OutboundInterceptors { get; }
+        IEnumerable<IPipelineTask<IPipelineContext>> InboundTasks { get; }
+        IEnumerable<IPipelineTask<IPipelineContext>> OutboundTasks { get; }
         IDisposableObservable<T> CreateInbound<T>();
         IDisposable CreateOutbound<T>(IObservable<T> observable);
     }

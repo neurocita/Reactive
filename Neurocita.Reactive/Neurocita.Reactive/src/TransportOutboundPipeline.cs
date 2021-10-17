@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.IO;
@@ -11,7 +12,7 @@ namespace Neurocita.Reactive
         private readonly IRuntimeContext runtimeContext;
         private readonly ITransportObserver transportObserver;
         private readonly ISerializer serializer;
-        private readonly IEnumerable<Func<ITransportPipelineContext, ITransportPipelineContext>> interceptors;
+        private readonly IEnumerable<IPipelineTask<IPipelineContext>> pipelineTasks;
         private IDisposable disposable;
 
         internal TransportOutboundPipeline(ITransportPipeline transportPipeline, IObservable<T> observable, IDictionary<string, object> messageHeaders = null)
@@ -22,7 +23,7 @@ namespace Neurocita.Reactive
             runtimeContext = transportPipeline.RuntimeContext;
             transportObserver = transportPipeline.Transport?.CreateOutbound();
             serializer = transportPipeline.Serializable?.CreateSerializer();
-            interceptors = transportPipeline.OutboundInterceptors ?? new List<Func<ITransportPipelineContext, ITransportPipelineContext>>();
+            pipelineTasks = transportPipeline.OutboundTasks ?? new List<IPipelineTask<IPipelineContext>>();
 
             if (runtimeContext == null)
                 throw new ArgumentNullException(nameof(runtimeContext));
@@ -32,30 +33,42 @@ namespace Neurocita.Reactive
                 throw new ArgumentNullException(nameof(serializer));
 
             disposable = observable
-                .Select(
-                    state =>
+                .Select(instance =>
+                {
+                    IDictionary<string, object> headers = messageHeaders ?? new Dictionary<string, object>();
+                    if (!headers.ContainsKey(MessageHeaders.ContentType) && !string.IsNullOrWhiteSpace(transportPipeline.Serializable.ContentType))
+                        headers.Add(MessageHeaders.ContentType, transportPipeline.Serializable.ContentType);
+                    if (!headers.ContainsKey(MessageHeaders.QualifiedTypeName))
+                        headers.Add(MessageHeaders.QualifiedTypeName, typeof(T).FullName);
+                    if (!headers.ContainsKey(MessageHeaders.CreationTime))
+                        headers.Add(MessageHeaders.CreationTime, DateTimeOffset.UtcNow);
+                    var message = new ObjectMessage<T>(instance, headers);
+                    return new ObjectPipelineContext(runtimeContext, PipelineDirection.Outbound, message);
+                })
+                .Select(context =>
+                {
+                    IObjectPipelineContext pipelineContext = context;
+                    foreach (var pipelineTask in pipelineTasks.Where(task => task is IObjectPipelineTask))
                     {
-                        Stream stream = serializer.Serialize(state);
-                        IDictionary<string, object> headers = messageHeaders ?? new Dictionary<string, object>();
-                        if (!headers.ContainsKey(MessageHeaders.ContentType) && !string.IsNullOrWhiteSpace(transportPipeline.Serializable.ContentType))
-                            headers.Add(MessageHeaders.ContentType, transportPipeline.Serializable.ContentType);
-                        if (!headers.ContainsKey(MessageHeaders.QualifiedTypeName))
-                            headers.Add(MessageHeaders.QualifiedTypeName, typeof(T).FullName);
-                        if (!headers.ContainsKey(MessageHeaders.CreationTime))
-                            headers.Add(MessageHeaders.CreationTime, DateTimeOffset.UtcNow);
-                        TransportMessage transportMessage = new TransportMessage(stream, headers);
-                        return new TransportPipelineContext(runtimeContext, transportMessage);
-                    })
-                .Select(
-                    context =>
+                        pipelineTask.Run(pipelineContext);
+                    }
+                    return pipelineContext;
+                })
+                .Select(context =>
+                {
+                    Stream stream = serializer.Serialize((T) context.Message.Body);
+                    TransportMessage transportMessage = new TransportMessage(stream, context.Message.Headers);
+                    return new TransportPipelineContext(context, context.Direction, transportMessage, transportPipeline.Serializable);
+                })
+                .Select(context =>
+                {
+                    ITransportPipelineContext pipelineContext = context;
+                    foreach (var pipelineTask in pipelineTasks.Where(task => task is ITransportPipelineTask))
                     {
-                        ITransportPipelineContext transportPipelineContext = context;
-                        foreach (var interceptor in interceptors)
-                        {
-                            transportPipelineContext = interceptor.Invoke(transportPipelineContext);
-                        }
-                        return transportPipelineContext;
-                    })
+                        pipelineTask.Run(pipelineContext);
+                    }
+                    return pipelineContext;
+                })
                 .Subscribe(transportObserver);
         }
 

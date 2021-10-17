@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Disposables;
@@ -8,23 +9,19 @@ namespace Neurocita.Reactive
     internal class TransportInboundPipeline<T> : IDisposableObservable<T>
     {
         private bool disposed = false;
-        private readonly IRuntimeContext runtimeContext;
         private readonly IDisposableObservable<ITransportPipelineContext> transportObservable;
         private readonly IDeserializer deserializer;
-        private readonly IEnumerable<Func<ITransportPipelineContext, ITransportPipelineContext>> interceptors;
+        private readonly IEnumerable<IPipelineTask<IPipelineContext>> pipelineTasks;
 
         internal TransportInboundPipeline(ITransportPipeline transportPipeline)
         {
             if (transportPipeline == null)
                 throw new ArgumentNullException(nameof(transportPipeline));
 
-            runtimeContext = transportPipeline.RuntimeContext;
             transportObservable = transportPipeline.Transport?.CreateInbound();
             deserializer = transportPipeline.Serializable?.CreateDeserializer();
-            interceptors = transportPipeline.InboundInterceptors ?? new List<Func<ITransportPipelineContext, ITransportPipelineContext>>();
+            pipelineTasks = transportPipeline.InboundTasks ?? new List<IPipelineTask<IPipelineContext>>();
 
-            if (runtimeContext == null)
-                throw new ArgumentNullException(nameof(runtimeContext));
             if (transportObservable == null)
                 throw new ArgumentNullException(nameof(transportObservable));
             if (deserializer == null)
@@ -37,16 +34,35 @@ namespace Neurocita.Reactive
                 return Disposable.Empty;
 
             return transportObservable
+                .Do(context =>
+                {
+                    if (context.Direction != PipelineDirection.Inbound)
+                        throw new ArgumentOutOfRangeException(nameof(context.Direction));
+                })
                 .Select(context =>
-                        {
-                            ITransportPipelineContext transportPipelineContext = context;
-                            foreach (var interceptor in interceptors)
-                            {
-                                transportPipelineContext = interceptor.Invoke(transportPipelineContext);
-                            }
-                            return transportPipelineContext;
-                        })
-                .Select(context => deserializer.Deserialize<T>(context.Message.Body))
+                {
+                    ITransportPipelineContext pipelineContext = context;
+                    foreach (var pipelineTask in pipelineTasks.Where(task => task is ITransportPipelineTask))
+                    {
+                        pipelineTask.Run(pipelineContext);
+                    }
+                    return pipelineContext;
+                })
+                .Select(context =>
+                {
+                    T instancce = deserializer.Deserialize<T>(context.Message.Body);
+                    return new ObjectPipelineContext(context, PipelineDirection.Inbound, new ObjectMessage<T>(instancce, context.Message.Headers));
+                })
+                .Select(context =>
+                {
+                    IObjectPipelineContext pipelineContext = context;
+                    foreach (var pipelineTask in pipelineTasks.Where(task => task is IObjectPipelineTask))
+                    {
+                        pipelineTask.Run(pipelineContext);
+                    }
+                    return pipelineContext;
+                })
+                .Select(context => (T) context.Message.Body)
                 .Subscribe(observer);
         }
 

@@ -2,9 +2,9 @@
 
 namespace Neurocita.Reactive
 {
-    public interface ITransportPipelineContext
+    public interface ITransportPipelineContext : IPipelineContext
     {
-        IRuntimeContext Runtime { get; }
         IMessage<Stream> Message { get; }
+        ISerialization Serialization { get; }
     }
 }
