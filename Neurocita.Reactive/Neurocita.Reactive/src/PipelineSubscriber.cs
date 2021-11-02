@@ -3,27 +3,32 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.IO;
+using System.Reactive.Disposables;
 
 namespace Neurocita.Reactive
 {
-    internal class TransportOutboundPipeline<T> : IDisposable
+    internal class PipelineSubscriber<T> : IPipelineSubscriber
     {
         private bool disposed = false;
+        private readonly string address;
         private readonly IRuntimeContext runtimeContext;
         private readonly ITransportObserver transportObserver;
         private readonly ISerializer serializer;
         private readonly IEnumerable<IPipelineTask<IPipelineContext>> pipelineTasks;
-        private IDisposable disposable;
+        private CompositeDisposable disposable = new CompositeDisposable();
 
-        internal TransportOutboundPipeline(ITransportPipeline transportPipeline, IObservable<T> observable, IDictionary<string, object> messageHeaders = null)
+        internal PipelineSubscriber(IPipeline pipeline, string address, IObservable<T> observable, IDictionary<string, object> messageHeaders = null)
         {
-            if (transportPipeline == null)
-                throw new ArgumentNullException(nameof(transportPipeline));
+            if (pipeline == null)
+                throw new ArgumentNullException(nameof(pipeline));
+            if (string.IsNullOrEmpty(address))
+                throw new ArgumentNullException(nameof(address));
 
-            runtimeContext = transportPipeline.RuntimeContext;
-            transportObserver = transportPipeline.Transport?.CreateOutbound();
-            serializer = transportPipeline.Serializable?.CreateSerializer();
-            pipelineTasks = transportPipeline.OutboundTasks ?? new List<IPipelineTask<IPipelineContext>>();
+            this.address = address;
+            runtimeContext = pipeline.RuntimeContext;
+            transportObserver = pipeline.Transport?.SubscribeTo(address);
+            serializer = pipeline.Serializer;
+            pipelineTasks = pipeline.OutboundTasks ?? new List<IPipelineTask<IPipelineContext>>();
 
             if (runtimeContext == null)
                 throw new ArgumentNullException(nameof(runtimeContext));
@@ -32,18 +37,19 @@ namespace Neurocita.Reactive
             if (serializer == null)
                 throw new ArgumentNullException(nameof(serializer));
 
-            disposable = observable
+            disposable.Add(transportObserver);
+            disposable.Add(observable?
                 .Select(instance =>
                 {
                     IDictionary<string, object> headers = messageHeaders ?? new Dictionary<string, object>();
-                    if (!headers.ContainsKey(MessageHeaders.ContentType) && !string.IsNullOrWhiteSpace(transportPipeline.Serializable.ContentType))
-                        headers.Add(MessageHeaders.ContentType, transportPipeline.Serializable.ContentType);
+                    if (!headers.ContainsKey(MessageHeaders.ContentType) && !string.IsNullOrWhiteSpace(pipeline.Serializer.ContentType))
+                        headers.Add(MessageHeaders.ContentType, pipeline.Serializer.ContentType);
                     if (!headers.ContainsKey(MessageHeaders.QualifiedTypeName))
                         headers.Add(MessageHeaders.QualifiedTypeName, typeof(T).FullName);
                     if (!headers.ContainsKey(MessageHeaders.CreationTime))
                         headers.Add(MessageHeaders.CreationTime, DateTimeOffset.UtcNow);
                     var message = new ObjectMessage<T>(instance, headers);
-                    return new ObjectPipelineContext(runtimeContext, PipelineDirection.Outbound, message);
+                    return new ObjectPipelineContext(runtimeContext, PipelineDirection.Outbound, message) as IObjectPipelineContext;
                 })
                 .Select(context =>
                 {
@@ -58,7 +64,7 @@ namespace Neurocita.Reactive
                 {
                     Stream stream = serializer.Serialize((T) context.Message.Body);
                     TransportMessage transportMessage = new TransportMessage(stream, context.Message.Headers);
-                    return new TransportPipelineContext(context, context.Direction, transportMessage, transportPipeline.Serializable);
+                    return new TransportPipelineContext(context, context.Direction, transportMessage, pipeline.Serializer) as ITransportPipelineContext;
                 })
                 .Select(context =>
                 {
@@ -69,8 +75,11 @@ namespace Neurocita.Reactive
                     }
                     return pipelineContext;
                 })
-                .Subscribe(transportObserver);
+                .Subscribe(transportObserver)
+            );
         }
+
+        public string Address => address;
 
         public void Dispose() => Dispose(true);
 
@@ -80,7 +89,6 @@ namespace Neurocita.Reactive
                 return;
 
             disposable?.Dispose();
-            transportObserver?.Dispose();
 
             disposed = true;
         }

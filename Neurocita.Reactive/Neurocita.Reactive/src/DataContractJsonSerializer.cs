@@ -1,22 +1,29 @@
 ﻿using System.IO;
+using System.Runtime.Serialization.Json;
 
 namespace Neurocita.Reactive
 {
     public class DataContractJsonSerializer : ISerializer
     {
-        private readonly DataContractJsonSerialization serialization;
+        private readonly DataContractJsonSerializerSettings settings = new DataContractJsonSerializerSettings();
 
-        internal DataContractJsonSerializer(DataContractJsonSerialization serialization)
-        {
-            this.serialization = serialization;
-        }
+        public DataContractJsonSerializerSettings Settings => settings;
+        public string ContentType => "application/json";
+
         public Stream Serialize<T>(T instance)
         {
-            System.Runtime.Serialization.Json.DataContractJsonSerializer serializer = new System.Runtime.Serialization.Json.DataContractJsonSerializer(typeof(T), serialization.Settings);
+            System.Runtime.Serialization.Json.DataContractJsonSerializer serializer = new System.Runtime.Serialization.Json.DataContractJsonSerializer(typeof(T), settings);
             MemoryStream stream = new MemoryStream();
             serializer.WriteObject(stream, instance);
             stream.Position = 0;
             return stream;
+        }
+
+        public T Deserialize<T>(Stream stream)
+        {
+            stream.Position = 0;
+            System.Runtime.Serialization.Json.DataContractJsonSerializer serializer = new System.Runtime.Serialization.Json.DataContractJsonSerializer(typeof(T), settings);
+            return (T)serializer.ReadObject(stream);
         }
     }
 }

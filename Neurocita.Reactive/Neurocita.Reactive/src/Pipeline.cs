@@ -3,22 +3,22 @@ using System.Collections.Generic;
 
 namespace Neurocita.Reactive
 {
-    internal class TransportPipeline : ITransportPipeline
+    internal class Pipeline : IPipeline
     {
         public IRuntimeContext RuntimeContext { get; }
-        public ISerialization Serializable { get; }
+        public ISerializer Serializer { get; }
         public ITransport Transport { get; }
         public IEnumerable<IPipelineTask<IPipelineContext>> InboundTasks { get; }
         public IEnumerable<IPipelineTask<IPipelineContext>> OutboundTasks { get; }
 
-        public IDisposableObservable<T> CreateInbound<T>()
+        public IPipelineObservable<T> ObserveFrom<T>(string address)
         {
-            return new TransportInboundPipeline<T>(this);
+            return new PipelineObservable<T>(this, address);
         }
 
-        public IDisposable CreateOutbound<T>(IObservable<T> observable)
+        public IPipelineSubscriber SubscribeTo<T>(string address, IObservable<T> observable)
         {
-            return new TransportOutboundPipeline<T>(this, observable);
+            return new PipelineSubscriber<T>(this, address, observable);
         }
     }
 }

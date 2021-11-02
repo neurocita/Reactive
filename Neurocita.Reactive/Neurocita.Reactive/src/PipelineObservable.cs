@@ -6,27 +6,33 @@ using System.Reactive.Disposables;
 
 namespace Neurocita.Reactive
 {
-    internal class TransportInboundPipeline<T> : IDisposableObservable<T>
+    internal class PipelineObservable<T> : IPipelineObservable<T>
     {
         private bool disposed = false;
+        private readonly string address;
         private readonly IDisposableObservable<ITransportPipelineContext> transportObservable;
-        private readonly IDeserializer deserializer;
+        private readonly ISerializer serializer;
         private readonly IEnumerable<IPipelineTask<IPipelineContext>> pipelineTasks;
 
-        internal TransportInboundPipeline(ITransportPipeline transportPipeline)
+        internal PipelineObservable(IPipeline transportPipeline, string address)
         {
             if (transportPipeline == null)
                 throw new ArgumentNullException(nameof(transportPipeline));
+            if (string.IsNullOrEmpty(address))
+                throw new ArgumentNullException(nameof(address));
 
-            transportObservable = transportPipeline.Transport?.CreateInbound();
-            deserializer = transportPipeline.Serializable?.CreateDeserializer();
+            this.address = address;
+            transportObservable = transportPipeline.Transport?.ObserveFrom(address);
+            serializer = transportPipeline.Serializer;
             pipelineTasks = transportPipeline.InboundTasks ?? new List<IPipelineTask<IPipelineContext>>();
 
             if (transportObservable == null)
                 throw new ArgumentNullException(nameof(transportObservable));
-            if (deserializer == null)
-                throw new ArgumentNullException(nameof(deserializer));
+            if (serializer == null)
+                throw new ArgumentNullException(nameof(serializer));
         }
+
+        public string Address => address;
 
         public IDisposable Subscribe(IObserver<T> observer)
         {
@@ -50,7 +56,7 @@ namespace Neurocita.Reactive
                 })
                 .Select(context =>
                 {
-                    T instancce = deserializer.Deserialize<T>(context.Message.Body);
+                    T instancce = serializer.Deserialize<T>(context.Message.Body);
                     return new ObjectPipelineContext(context, PipelineDirection.Inbound, new ObjectMessage<T>(instancce, context.Message.Headers));
                 })
                 .Select(context =>

@@ -1,16 +1,14 @@
 ﻿using System.IO;
 using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Neurocita.Reactive
 {
     public class BinarySerializer : ISerializer
     {
-        IFormatter formatter;
+        IFormatter formatter = new BinaryFormatter();
 
-        internal BinarySerializer(IFormatter formatter)
-        {
-            this.formatter = formatter;
-        }
+        public string ContentType => "application/octet-stream";
 
         public Stream Serialize<T>(T instance)
         {
@@ -18,6 +16,12 @@ namespace Neurocita.Reactive
             formatter.Serialize(stream, instance);
             stream.Position = 0;
             return stream;
+        }
+
+        public T Deserialize<T>(Stream stream)
+        {
+            stream.Position = 0;
+            return (T)formatter.Deserialize(stream);
         }
     }
 }

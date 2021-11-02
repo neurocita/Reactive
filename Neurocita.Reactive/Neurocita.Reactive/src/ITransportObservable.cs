@@ -1,8 +1,7 @@
-﻿using System;
-
-namespace Neurocita.Reactive
+﻿namespace Neurocita.Reactive
 {
     public interface ITransportObservable : IDisposableObservable<ITransportPipelineContext>
     {
+        string Address { get; }
     }
 }

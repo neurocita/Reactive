@@ -2,7 +2,7 @@
 
 namespace Neurocita.Reactive
 {
-    public interface ITransportObserver : IObserver<ITransportPipelineContext>, IDisposable
+    public interface IPipelineSubscriber : IDisposable
     {
         string Address { get; }
     }

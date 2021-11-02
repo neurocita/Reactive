@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace Neurocita.Reactive
 {
-    public interface ITransportPipeline
+    public interface IPipeline
     {
         IRuntimeContext RuntimeContext { get; }
-        ISerialization Serializable { get; }
+        ISerializer Serializer { get; }
         ITransport Transport { get; }
         IEnumerable<IPipelineTask<IPipelineContext>> InboundTasks { get; }
         IEnumerable<IPipelineTask<IPipelineContext>> OutboundTasks { get; }
-        IDisposableObservable<T> CreateInbound<T>();
-        IDisposable CreateOutbound<T>(IObservable<T> observable);
+        IPipelineObservable<T> ObserveFrom<T>(string address);
+        IPipelineSubscriber SubscribeTo<T>(string address, IObservable<T> observable);
     }
 }
