@@ -5,7 +5,7 @@ namespace Neurocita.Reactive
 {
     public interface ITransportMessageSource : IDisposable
     {
-        string Address { get; }
+        string Node { get; }
         IObservable<IMessage<Stream>> Messages { get; }
     }
 }

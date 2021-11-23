@@ -3,14 +3,15 @@ using System.Collections.Generic;
 
 namespace Neurocita.Reactive
 {
-    public class ObjectMessage<T> : IMessage<T>
+    public class ObjectMessage<TDataContract> : IMessage<TDataContract>
+        where TDataContract : IDataContract
     {
-        public ObjectMessage(T body)
+        public ObjectMessage(TDataContract body)
             : this(body, null)
         {
 
         }
-        public ObjectMessage(T body, IDictionary<string, object> headers = null)
+        public ObjectMessage(TDataContract body, IDictionary<string, object> headers = null)
         {
             if (body == null)
                 throw new ArgumentNullException(nameof(body));
@@ -19,6 +20,6 @@ namespace Neurocita.Reactive
         }
 
         public IDictionary<string, object> Headers { get; }
-        public T Body { get; }
+        public TDataContract Body { get; }
     }
 }

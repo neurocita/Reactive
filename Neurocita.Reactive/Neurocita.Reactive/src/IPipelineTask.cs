@@ -1,6 +1,7 @@
 ﻿namespace Neurocita.Reactive
 {
-    public interface IPipelineTask<T> : IRuntimeTask<T> where T : IPipelineContext
+    public interface IPipelineTask<TPipelineContext> : IRuntimeTask<TPipelineContext>
+        where TPipelineContext : IPipelineContext
     {
     }
 }

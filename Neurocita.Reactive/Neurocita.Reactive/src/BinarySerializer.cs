@@ -6,7 +6,7 @@ namespace Neurocita.Reactive
 {
     public class BinarySerializer : ISerializer
     {
-        IFormatter formatter = new BinaryFormatter();
+        private readonly IFormatter formatter = new BinaryFormatter();
 
         public string ContentType => "application/octet-stream";
 

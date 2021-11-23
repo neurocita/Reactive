@@ -10,10 +10,11 @@
     <RepositoryUrl>https://github.com/neurocita/Reactive</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>Neurocita Reactive Rx Observable</PackageTags>
+    <UserSecretsId>feec4668-a934-4075-9c88-599606084d45</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DryIoc.Internal" Version="4.8.2" />
+    <PackageReference Include="Common.Logging" Version="3.4.1" />
     <PackageReference Include="System.Reactive" Version="4.4.1" />
   </ItemGroup>
 

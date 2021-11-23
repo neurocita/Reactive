@@ -1,7 +1,8 @@
 ﻿namespace Neurocita.Reactive
 {
-    public interface IRuntimeTask<T> where T : IRuntimeContext
+    public interface IRuntimeTask<TRuntimeContext>
+        where TRuntimeContext : IRuntimeContext
     {
-        void Run(T context);
+        void Run(TRuntimeContext context);
     }
 }

@@ -11,6 +11,7 @@ using Amqp.Listener;
 
 namespace Neurocita.Reactive.Amqp
 {
+#if _NEVER
     internal class AmqpTransport : ITransport
     {
         private readonly IRuntimeContext runtimeContext;
@@ -20,11 +21,11 @@ namespace Neurocita.Reactive.Amqp
 
         private Connection connection;
         private readonly ContainerHost containerhost;
-        private readonly IList<Tuple<ReceiverLink,IObserver<ITransportPipelineContext>>> receivers = new List<Tuple<ReceiverLink, IObserver<ITransportPipelineContext>>>();
+        private readonly IList<Tuple<ReceiverLink,IObserver<IPipelineTransportContext>>> receivers = new List<Tuple<ReceiverLink, IObserver<IPipelineTransportContext>>>();
         SenderLink senderLink;
         IDisposable senderDisposable;
 
-        public AmqpTransport(IRuntimeContext runtimeContext, string uri, string node, IObservable<ITransportPipelineContext> observable)
+        public AmqpTransport(IRuntimeContext runtimeContext, string uri, string node, IObservable<IPipelineTransportContext> observable)
             : this(runtimeContext, uri, node)
         {
             senderDisposable = observable.Subscribe(this);
@@ -65,7 +66,7 @@ namespace Neurocita.Reactive.Amqp
                 session = null;
             }
 
-            foreach (Tuple<ReceiverLink, IObserver<ITransportPipelineContext>> receiver in receivers)
+            foreach (Tuple<ReceiverLink, IObserver<IPipelineTransportContext>> receiver in receivers)
             {
                 ReceiverLink receiverLink = receiver.Item1;
                 if (receiverLink != null)
@@ -77,7 +78,7 @@ namespace Neurocita.Reactive.Amqp
                     session.Close();
                 }
 
-                IObserver<ITransportPipelineContext> observer = receiver.Item2;
+                IObserver<IPipelineTransportContext> observer = receiver.Item2;
                 if (observer != null)
                     observer.OnCompleted();
             }
@@ -140,7 +141,7 @@ namespace Neurocita.Reactive.Amqp
             }
         }
 
-        public void OnNext(ITransportPipelineContext value)
+        public void OnNext(IPipelineTransportContext value)
         {
             if (disposed || value == null || value.Message == null || value.Message.Body == null)
                 return;
@@ -166,7 +167,7 @@ namespace Neurocita.Reactive.Amqp
             }
         }
 
-        public IDisposable Subscribe(IObserver<ITransportPipelineContext> observer)
+        public IDisposable Subscribe(IObserver<IPipelineTransportContext> observer)
         {
             if (disposed)
                 throw new ObjectDisposedException(nameof(AmqpTransport));
@@ -222,8 +223,8 @@ namespace Neurocita.Reactive.Amqp
                 receiverLink.Closed -= OnClosed;
                 receiverLink.Session.Closed -= OnClosed;
                 receiverLink.Session.Close();
-                Tuple<ReceiverLink, IObserver<ITransportPipelineContext>> receiver = receivers.Where(tuple => tuple.Item1 == receiverLink).FirstOrDefault();
-                IObserver<ITransportPipelineContext> observer = receiver.Item2;
+                Tuple<ReceiverLink, IObserver<IPipelineTransportContext>> receiver = receivers.Where(tuple => tuple.Item1 == receiverLink).FirstOrDefault();
+                IObserver<IPipelineTransportContext> observer = receiver.Item2;
                 receivers.Remove(receiver);
 
                 if (PrepareConnection())
@@ -243,7 +244,7 @@ namespace Neurocita.Reactive.Amqp
                 if (PrepareConnection())
                 {
 
-                    foreach (Tuple<ReceiverLink, IObserver<ITransportPipelineContext>> receiver in receivers)
+                    foreach (Tuple<ReceiverLink, IObserver<IPipelineTransportContext>> receiver in receivers)
                     {
                         receiverLink = receiver.Item1;
                         if (receiverLink != null)
@@ -255,7 +256,7 @@ namespace Neurocita.Reactive.Amqp
                             session.Close();
                         }
 
-                        IObserver<ITransportPipelineContext> observer = receiver.Item2;
+                        IObserver<IPipelineTransportContext> observer = receiver.Item2;
                         receivers.Remove(receiver);
 
                         Session session = new Session(connection);
@@ -279,4 +280,5 @@ namespace Neurocita.Reactive.Amqp
             throw new NotImplementedException();
         }
     }
+#endif
 }
