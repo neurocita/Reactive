@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Neurocita.Reactive
 {
-    internal class TransportMessage : IMessage<Stream>
+    public class TransportMessage : IMessage<Stream>
     {
         public TransportMessage(Stream body, IDictionary<string, object> headers = null)
         {

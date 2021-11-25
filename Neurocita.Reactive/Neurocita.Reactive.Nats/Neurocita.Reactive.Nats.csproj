@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="NATS.Client" Version="0.14.1" />
+    <PackageReference Include="Neurocita.Reactive" Version="0.1.2" />
   </ItemGroup>
 
 </Project>
