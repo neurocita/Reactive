@@ -2,11 +2,19 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
+    <Version>0.1.21</Version>
+    <Authors>Neurocita</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/neurocita/Reactive</PackageProjectUrl>
+    <PackageTags>Neurocita Reactive Rx Observable Streaming Nats</PackageTags>
+    <RepositoryUrl>https://github.com/neurocita/Reactive</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <Description>Transport implementation for NATS usable in reactive extensions</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NATS.Client" Version="0.14.1" />
-    <PackageReference Include="Neurocita.Reactive" Version="0.1.2" />
+    <PackageReference Include="NATS.Client" Version="0.14.3" />
+    <PackageReference Include="Neurocita.Reactive" Version="0.1.20" />
   </ItemGroup>
 
 </Project>

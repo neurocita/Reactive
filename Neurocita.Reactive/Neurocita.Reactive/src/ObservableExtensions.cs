@@ -41,6 +41,14 @@ namespace Neurocita.Reactive
             return observable.Select(context => context.Message.Body);
         }
 
+        public static IObservable<IMessage<Stream>> ToTransportMessage(this IObservable<IPipelineTransportContext> observable)
+        {
+            return observable.Select(context =>
+            {
+                return context.Message;
+            });
+        }
+
         public static IObservable<IPipelineTransportContext> ToPipelineContext(this IObservable<IMessage<Stream>> observable)
       
         {

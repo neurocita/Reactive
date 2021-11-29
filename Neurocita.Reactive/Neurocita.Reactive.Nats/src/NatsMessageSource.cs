@@ -10,21 +10,22 @@ namespace Neurocita.Reactive.Nats
 {
     internal class NatsMessageSource : ITransportMessageSource
     {
-        private readonly Lazy<IConnection> connection;
         private readonly string node;
         private readonly IObservable<IMessage<Stream>> messages;
-        private CompositeDisposable subscribers = new CompositeDisposable();
-
-        public NatsMessageSource(Lazy<IConnection> connection, string node)
+        private readonly CompositeDisposable subscribers = new CompositeDisposable();
+        private readonly IDisposable refCounter;
+        private readonly Lazy<INATSObservable<Msg>> natsObservanle;
+        
+        public NatsMessageSource(NatsSharedConnection sharedConnection, string node)
         {
-            this.connection = connection;
             this.node = node;
-            this.messages = Observable.Create<IMessage<Stream>>(observer =>
+            refCounter = sharedConnection.GetDisposable();
+            natsObservanle = sharedConnection.GetMessages(node);
+            messages = Observable.Create<IMessage<Stream>>(observer =>
             {
                 IObservable<IMessage<Stream>> observable =
-                    connection
+                    natsObservanle
                     .Value
-                    .Observe(node)
                     .Select(msg =>
                     {
                         IDictionary<string, object> headers = msg.HasHeaders ? new Dictionary<string, object>() : null;
@@ -33,9 +34,17 @@ namespace Neurocita.Reactive.Nats
                             foreach (string key in msg.Header.Keys)
                             {
                                 headers.Add(key, msg.Header[key]);
+                                Console.WriteLine("Header: ", key);
                             }
 
-                            // ToDo: Standard heaers? ...
+                            if (!string.IsNullOrWhiteSpace(msg.Reply))
+                                if (headers.ContainsKey(MessageHeaders.ReplyTo))
+                                    headers[MessageHeaders.ReplyTo] = msg.Reply;
+                                else
+                                    headers.Add(MessageHeaders.ReplyTo, msg.Reply);
+                            // ... ??? ...
+
+                            // ToDo: Standard headers? ...
                             /*
                             foreach(string key in msg.Header.Keys)
                             {
@@ -48,6 +57,7 @@ namespace Neurocita.Reactive.Nats
                             }
                             */
                         }
+
                         Stream stream = new MemoryStream(msg.Data);
                         return new TransportMessage(stream, headers);
                     });
@@ -70,13 +80,7 @@ namespace Neurocita.Reactive.Nats
             if (disposing)
             {
                 subscribers.Dispose();
-
-                if (connection.IsValueCreated)
-                {
-                    connection.Value.Drain();
-                    connection.Value.Close();
-                    connection.Value.Dispose();
-                }
+                refCounter.Dispose();
             }
         }
     }

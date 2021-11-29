@@ -8,7 +8,7 @@ namespace Neurocita.Reactive
 
         public Stream Serialize<T>(T instance)
         {
-            System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(typeof(T));
+            System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(instance.GetType());
             MemoryStream stream = new MemoryStream();
             serializer.Serialize(stream, instance);
             stream.Position = 0;

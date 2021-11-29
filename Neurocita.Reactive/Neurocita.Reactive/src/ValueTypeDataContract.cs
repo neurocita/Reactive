@@ -1,14 +1,25 @@
-﻿namespace Neurocita.Reactive
+﻿using System;
+using System.Runtime.Serialization;
+
+namespace Neurocita.Reactive
 {
-    internal class ValueTypeDataContract<TValue> : IValueTypeDataContract<TValue>
+    [Serializable]
+    [DataContract]
+    public class ValueTypeDataContract<TValue> : IValueTypeDataContract<TValue>
         where TValue : struct
     {
-        internal ValueTypeDataContract(TValue value)
+        public ValueTypeDataContract()
+        {
+
+        }
+
+        public ValueTypeDataContract(TValue value)
         {
             Value = value;
         }
 
-        public TValue Value { get; }
+        [DataMember]
+        public TValue Value { get; set; }
 
         public static implicit operator TValue(ValueTypeDataContract<TValue> dataContract) => dataContract.Value;
         public static explicit operator ValueTypeDataContract<TValue>(TValue value) => new ValueTypeDataContract<TValue>(value);

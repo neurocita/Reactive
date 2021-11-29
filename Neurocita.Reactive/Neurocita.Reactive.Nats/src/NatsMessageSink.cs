@@ -1,4 +1,4 @@
-﻿using Common.Logging;
+﻿//using Common.Logging;
 using NATS.Client;
 using System;
 using System.IO;
@@ -10,15 +10,17 @@ namespace Neurocita.Reactive.Nats
 {
     internal class NatsMessageSink : ITransportMessageSink
     {
-        private readonly Lazy<IConnection> connection;
         private readonly string node;
-        private CompositeDisposable subscribers = new CompositeDisposable();
-        private readonly Common.Logging.ILog log = LogManager.GetLogger("");
-
-        public NatsMessageSink(Lazy<IConnection> connection, string node)
+        private readonly CompositeDisposable subscribers = new CompositeDisposable();
+        //private readonly Common.Logging.ILog log = LogManager.GetLogger<NatsMessageSink>();
+        private readonly IDisposable refCounter;
+        private Action<Msg> publish;
+        
+        public NatsMessageSink(NatsSharedConnection sharedConnection, string node)
         {
-            this.connection = connection;
             this.node = node;
+            refCounter = sharedConnection.GetDisposable();
+            publish = sharedConnection.Publish;
         }
 
         public string Node => node;
@@ -38,16 +40,20 @@ namespace Neurocita.Reactive.Nats
                         throw new ArgumentOutOfRangeException(nameof(message));
 
                     Msg msg = new Msg(node, data);
+
+                    if (message.Headers.ContainsKey(MessageHeaders.ReplyTo))
+                        msg.Reply = message.Headers[MessageHeaders.ReplyTo] as string;
                     // ToDo: Headers, reply, ...
-                    connection.Value.Publish(msg);
+
+                    publish.Invoke(msg);
                 },
                 exception =>
                 {
-                    log.Error(exception.Message, exception);
+                    //log.Error(exception.Message, exception);
                 },
                 () =>
                 {
-                    log.Trace("Message stream completed.");
+                    //log.Info("Message stream completed.");
                 });
             // ToDo: Error and completion handling ...
             messages
@@ -71,13 +77,7 @@ namespace Neurocita.Reactive.Nats
             if (disposing)
             {
                 subscribers.Dispose();
-
-                if (connection.IsValueCreated)
-                {
-                    connection.Value.Drain();
-                    connection.Value.Close();
-                    connection.Value.Dispose();
-                }
+                refCounter.Dispose();
             }
         }
     }
