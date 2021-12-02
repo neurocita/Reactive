@@ -10,17 +10,17 @@ namespace Neurocita.Reactive.Nats
 {
     internal class NatsMessageSource : ITransportMessageSource
     {
-        private readonly string node;
+        private readonly string path;
         private readonly IObservable<IMessage<Stream>> messages;
         private readonly CompositeDisposable subscribers = new CompositeDisposable();
         private readonly IDisposable refCounter;
         private readonly Lazy<INATSObservable<Msg>> natsObservanle;
         
-        public NatsMessageSource(NatsSharedConnection sharedConnection, string node)
+        public NatsMessageSource(NatsConnectionManager sharedConnection, string path)
         {
-            this.node = node;
+            this.path = path;
             refCounter = sharedConnection.GetDisposable();
-            natsObservanle = sharedConnection.GetMessages(node);
+            natsObservanle = sharedConnection.GetMessages(path);
             messages = Observable.Create<IMessage<Stream>>(observer =>
             {
                 IObservable<IMessage<Stream>> observable =
@@ -67,7 +67,7 @@ namespace Neurocita.Reactive.Nats
             });
         }
 
-        public string Node => node;
+        public string Path => path;
         public IObservable<IMessage<Stream>> Messages => messages;
 
         public void Dispose() => Dispose(true);

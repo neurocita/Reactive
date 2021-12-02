@@ -10,20 +10,20 @@ namespace Neurocita.Reactive.Nats
 {
     internal class NatsMessageSink : ITransportMessageSink
     {
-        private readonly string node;
+        private readonly string path;
         private readonly CompositeDisposable subscribers = new CompositeDisposable();
         //private readonly Common.Logging.ILog log = LogManager.GetLogger<NatsMessageSink>();
         private readonly IDisposable refCounter;
-        private Action<Msg> publish;
+        private readonly Action<Msg> publish;
         
-        public NatsMessageSink(NatsSharedConnection sharedConnection, string node)
+        public NatsMessageSink(NatsConnectionManager sharedConnection, string path)
         {
-            this.node = node;
+            this.path = path;
             refCounter = sharedConnection.GetDisposable();
             publish = sharedConnection.Publish;
         }
 
-        public string Node => node;
+        public string Path => path;
 
         public IDisposable Observe(IObservable<IMessage<Stream>> messages)
         {
@@ -39,7 +39,7 @@ namespace Neurocita.Reactive.Nats
                     if (message.Body.Read(data, 0, data.Length) != message.Body.Length)
                         throw new ArgumentOutOfRangeException(nameof(message));
 
-                    Msg msg = new Msg(node, data);
+                    Msg msg = new Msg(path, data);
 
                     if (message.Headers.ContainsKey(MessageHeaders.ReplyTo))
                         msg.Reply = message.Headers[MessageHeaders.ReplyTo] as string;

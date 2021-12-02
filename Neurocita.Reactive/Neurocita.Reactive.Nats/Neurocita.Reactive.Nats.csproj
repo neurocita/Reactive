@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
-    <Version>0.1.21</Version>
+    <Version>0.1.23</Version>
     <Authors>Neurocita</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/neurocita/Reactive</PackageProjectUrl>
@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="NATS.Client" Version="0.14.3" />
-    <PackageReference Include="Neurocita.Reactive" Version="0.1.20" />
+    <PackageReference Include="Neurocita.Reactive" Version="0.1.22" />
   </ItemGroup>
 
 </Project>

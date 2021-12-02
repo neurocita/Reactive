@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netcoreapp3.1;net46</TargetFrameworks>
-    <Version>0.1.20</Version>
+    <Version>0.1.22</Version>
     <Authors>Neurocita</Authors>
     <Description>Extensions and tools for reactive extensions</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -14,7 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Common.Logging" Version="3.4.1" />
     <PackageReference Include="System.Reactive" Version="4.4.1" />
   </ItemGroup>
 

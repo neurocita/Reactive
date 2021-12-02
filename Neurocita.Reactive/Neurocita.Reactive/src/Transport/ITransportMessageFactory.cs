@@ -2,8 +2,8 @@
 {
     public interface ITransportMessageFactory
     {
-        ITransportMessageSource CreateSource(string node);
-        ITransportMessageSink CreateSink(string node);
+        ITransportMessageSource CreateSource(string source);
+        ITransportMessageSink CreateSink(string destination);
         // ToDo: Create source / sink with filters
     }
 }

@@ -3,9 +3,8 @@ using System.IO;
 
 namespace Neurocita.Reactive
 {
-    public interface ITransportMessageSource : IDisposable
+    public interface ITransportMessageSource : INode, IDisposable
     {
-        string Node { get; }
         IObservable<IMessage<Stream>> Messages { get; }
     }
 }

@@ -5,14 +5,14 @@ using System.Reactive.Disposables;
 
 namespace Neurocita.Reactive.Nats
 {
-    internal class NatsSharedConnection
+    internal class NatsConnectionManager
     {
         private readonly Options options;
         private readonly object mutex = new object();
         private Lazy<IConnection> connection;
         private RefCountDisposable refCountDisposable;
 
-        internal NatsSharedConnection(Options options)
+        internal NatsConnectionManager(Options options)
         {
             this.options = options;
             connection = new Lazy<IConnection>(OnConnectionInit);

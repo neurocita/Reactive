@@ -7,10 +7,8 @@ namespace Neurocita.Reactive.Nats
 {
     public class NatsMessageFactory : ITransportMessageFactory
     {
-        private Options options;
-        private readonly NatsSharedConnection sharedConnection;
-        private Lazy<IConnection> connection;
-        private RefCountDisposable refCountDisposable;
+        private readonly Options options;
+        private readonly NatsConnectionManager connectionManager;
 
         public NatsMessageFactory()
             : this(ConnectionFactory.GetDefaultOptions())
@@ -53,36 +51,17 @@ namespace Neurocita.Reactive.Nats
         public NatsMessageFactory(Options options)
         {
             this.options = options;
-            sharedConnection = new NatsSharedConnection(options);
-            connection = new Lazy<IConnection>(() => new ConnectionFactory().CreateConnection(this.options));
-            refCountDisposable = new RefCountDisposable(Disposable.Create(OnDisposed));
+            connectionManager = new NatsConnectionManager(options);
         }
 
-        private Action OnDisposed
+        public ITransportMessageSource CreateSource(string source)
         {
-            get
-            {
-                return () =>
-                {
-                    lock (connection)
-                    {
-                        connection.Value.Dispose();
-                        connection = new Lazy<IConnection>(() => new ConnectionFactory().CreateConnection(this.options));
-                        refCountDisposable = new RefCountDisposable(Disposable.Create(OnDisposed));
-                        Console.WriteLine("OnDisposed");
-                    }
-                };
-            }
+            return new NatsMessageSource(connectionManager, source);
         }
 
-        public ITransportMessageSink CreateSink(string node)
+        public ITransportMessageSink CreateSink(string destination)
         {
-            return new NatsMessageSink(sharedConnection, node);
-        }
-
-        public ITransportMessageSource CreateSource(string node)
-        {
-            return new NatsMessageSource(sharedConnection, node);
+            return new NatsMessageSink(connectionManager, destination);
         }
     }
 }
