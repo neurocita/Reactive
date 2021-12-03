@@ -2,7 +2,6 @@
 {
     public interface IEndpointConfiguration
     {
-        IServiceConfiguration Service { get; }
-        IEndpoint<T> Create<T>();
+        IEndpoint Create();
     }
 }

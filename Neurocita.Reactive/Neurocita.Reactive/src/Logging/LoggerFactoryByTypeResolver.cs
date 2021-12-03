@@ -5,7 +5,17 @@ namespace Neurocita.Reactive
 {
     public class LoggerFactoryByTypeResolver : ILoggerFactoryResolver
     {
-        private readonly IDictionary<Type, ILoggerFactory> register = new Dictionary<Type, ILoggerFactory>();
+        private readonly IDictionary<Type, ILoggerFactory> register;
+
+        public LoggerFactoryByTypeResolver()
+            : this(new Dictionary<Type, ILoggerFactory>())
+        {
+        }
+
+        public LoggerFactoryByTypeResolver(IDictionary<Type, ILoggerFactory> register)
+        {
+            this.register = register;
+        }
 
         public void Register(Type type, ILoggerFactory loggerFactory)
         {

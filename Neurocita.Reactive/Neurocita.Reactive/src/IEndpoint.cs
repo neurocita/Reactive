@@ -2,7 +2,7 @@
 
 namespace Neurocita.Reactive
 {
-    public interface IEndpoint : INode
+    public interface IEndpoint : INode, IDisposable
     {
 
     }
