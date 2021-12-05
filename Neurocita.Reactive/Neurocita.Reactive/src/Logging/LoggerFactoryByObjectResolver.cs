@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Neurocita.Reactive
 {
@@ -24,6 +25,11 @@ namespace Neurocita.Reactive
         public bool Unregister(object instance)
         {
             return register.Remove(instance);
+        }
+
+        public ILoggerFactory Resolve(Type type)
+        {
+            throw new NotImplementedException();
         }
 
         public ILoggerFactory Resolve<T>(T instance)

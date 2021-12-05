@@ -1,4 +1,6 @@
-﻿namespace Neurocita.Reactive
+﻿using System;
+
+namespace Neurocita.Reactive
 {
     public class ConnectLoggerFactoryResolver : ILoggerFactoryResolver
     {
@@ -12,6 +14,11 @@
         public ILoggerFactoryResolver From(ILoggerFactory loggerFactory)
         {
             return new ConnectLoggerFactoryResolver(loggerFactory);
+        }
+
+        public ILoggerFactory Resolve(Type type)
+        {
+            return loggerFactory;
         }
 
         public ILoggerFactory Resolve<T>(T instance)

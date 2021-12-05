@@ -30,10 +30,14 @@ namespace Neurocita.Reactive
             return register.Remove(type);
         }
 
+        public ILoggerFactory Resolve(Type type)
+        {
+            return register[type];
+        }
+
         public ILoggerFactory Resolve<T>(T instance)
         {
-            Util.CheckNullArgument(instance);
-            return register[instance.GetType()];
+            return Resolve(instance.GetType());
         }
     }
 }

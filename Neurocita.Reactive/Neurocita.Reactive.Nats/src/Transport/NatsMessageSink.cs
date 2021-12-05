@@ -12,12 +12,13 @@ namespace Neurocita.Reactive.Nats
     {
         private readonly string path;
         private readonly CompositeDisposable subscribers = new CompositeDisposable();
-        //private readonly Common.Logging.ILog log = LogManager.GetLogger<NatsMessageSink>();
+        //private readonly ILogger logger;
         private readonly IDisposable refCounter;
         private readonly Action<Msg> publish;
         
         public NatsMessageSink(NatsConnectionManager sharedConnection, string path)
         {
+            //logger = LogManager.GetFactory(this).CreateLogger(this);
             this.path = path;
             refCounter = sharedConnection.GetDisposable();
             publish = sharedConnection.Publish;
@@ -49,11 +50,11 @@ namespace Neurocita.Reactive.Nats
                 },
                 exception =>
                 {
-                    //log.Error(exception.Message, exception);
+                    //logger.Error(exception.Message, exception);
                 },
                 () =>
                 {
-                    //log.Info("Message stream completed.");
+                    //logger.Info("Message stream completed.");
                 });
             // ToDo: Error and completion handling ...
             messages

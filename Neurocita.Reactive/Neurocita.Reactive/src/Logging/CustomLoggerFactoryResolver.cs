@@ -11,6 +11,11 @@ namespace Neurocita.Reactive
             this.resolver = resolver;
         }
 
+        public ILoggerFactory Resolve(Type type)
+        {
+            return resolver.Invoke(type);
+        }
+
         public ILoggerFactory Resolve<T>(T instance)
         {
             return resolver.Invoke(instance);

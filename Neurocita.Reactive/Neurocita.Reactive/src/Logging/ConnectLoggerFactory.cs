@@ -2,26 +2,33 @@
 
 namespace Neurocita.Reactive
 {
-    public class NullLoggerFactory : ILoggerFactory
+    public class ConnectLoggerFactory : ILoggerFactory
     {
+        private readonly ILogger logger;
+
+        public ConnectLoggerFactory(ILogger logger)
+        {
+            this.logger = logger;
+        }
+
         public ILogger CreateLogger(Type type)
         {
-            return NullLogger.Instance;
+            return logger;
         }
 
         public ILogger CreateLogger(Type type, LoggerLevel loggerLevel)
         {
-            return NullLogger.Instance;
+            return logger;
         }
 
         public ILogger CreateLogger<T>(T instance)
         {
-            return NullLogger.Instance;
+            return logger;
         }
 
         public ILogger CreateLogger<T>(T instance, LoggerLevel loggerLevel)
         {
-            return NullLogger.Instance;
+            return logger;
         }
     }
 }
