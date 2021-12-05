@@ -20,6 +20,12 @@ namespace Neurocita.Reactive
             });
         }
 
+        public static IObservable<IPipelineObjectContext<TDataContract>> Deserialize<TDataContract>(this IObservable<IPipelineTransportContext> observable, ISerializerFactory serializerFactory)
+            where TDataContract : IDataContract
+        {
+            return observable.Deserialize<TDataContract>(serializerFactory.CreateSerializer());
+        }
+
         public static IObservable<IPipelineTransportContext> Serialize<TDataContract>(this IObservable<IPipelineObjectContext<TDataContract>> observable, ISerializer serializer)
             where TDataContract : IDataContract
         {
@@ -33,6 +39,12 @@ namespace Neurocita.Reactive
                 TransportMessage transportMessage = new TransportMessage(stream, context.Message.Headers);
                 return new PipelineTransportContext(context.Direction, transportMessage) as IPipelineTransportContext;
             });
+        }
+
+        public static IObservable<IPipelineTransportContext> Serialize<TDataContract>(this IObservable<IPipelineObjectContext<TDataContract>> observable, ISerializerFactory serializerFactory)
+            where TDataContract : IDataContract
+        {
+            return observable.Serialize<TDataContract>(serializerFactory.CreateSerializer());
         }
 
         public static IObservable<TDataContract> ToDataContract<TDataContract>(this IObservable<IPipelineObjectContext<TDataContract>> observable)

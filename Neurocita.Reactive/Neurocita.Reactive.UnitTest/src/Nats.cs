@@ -98,12 +98,12 @@ namespace Neurocita.Reactive.UnitTest
         public void Pipeline()
         {
             ITransportMessageFactory transportMessageFactory = new NatsMessageFactory();
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer();
+            ISerializer serializer = new DataContractJsonSerializerFactory().CreateSerializer();
             using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
             {
                 using (ITransportMessageSource transportMessageSource = transportMessageFactory.CreateSource(node))
                 {
-                    using (transportMessageSource.Messages
+                    using (PipelineObservable.Create(transportMessageSource)
                         .ToPipelineContext()
                         .Deserialize<ValueTypeDataContract<int>>(serializer)
                         .ToDataContract()
@@ -125,7 +125,7 @@ namespace Neurocita.Reactive.UnitTest
                             {
                                 try
                                 {
-                                    Task.Delay(TimeSpan.FromSeconds(5), cancellationTokenSource.Token).Wait();
+                                    Task.Delay(TimeSpan.FromSeconds(60), cancellationTokenSource.Token).Wait();
                                 }
                                 catch (AggregateException exception)
                                 {

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netcoreapp3.1;net46</TargetFrameworks>
-    <Version>0.1.22</Version>
+    <Version>0.1.27</Version>
     <Authors>Neurocita</Authors>
     <Description>Extensions and tools for reactive extensions</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

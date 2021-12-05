@@ -7,8 +7,10 @@ namespace Neurocita.Reactive
     {
         public static ISet<Type> PrepareKnownTypes(IEnumerable<Type> knownTypes)
         {
-            return typeof(ISet<Type>).IsAssignableFrom(knownTypes.GetType())
-                    ? knownTypes as ISet<Type>
+            IEnumerable<Type> knownTypesLocal = knownTypes == null ? new HashSet<Type>() : knownTypes;
+
+            return typeof(ISet<Type>).IsAssignableFrom(knownTypesLocal.GetType())
+                    ? knownTypesLocal as ISet<Type>
                     : new HashSet<Type>(knownTypes);
         }
     }

@@ -6,9 +6,10 @@ namespace Neurocita.Reactive
 {
     public class ServiceBusConfiguration : IServiceBusConfiguration
     {
-        public IServiceBus Create()
+        public IServiceBusBuilder CreateBuilder()
         {
-            throw new NotImplementedException();
+            
+            return new ServiceBusBuilder();
         }
     }
 }

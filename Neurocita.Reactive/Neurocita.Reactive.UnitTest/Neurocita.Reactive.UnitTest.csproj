@@ -55,11 +55,11 @@
     <Reference Include="NATS.Client, Version=0.14.3.0, Culture=neutral, PublicKeyToken=5b58bc7249e111a9, processorArchitecture=MSIL">
       <HintPath>..\packages\NATS.Client.0.14.3\lib\net46\NATS.Client.dll</HintPath>
     </Reference>
-    <Reference Include="Neurocita.Reactive, Version=0.1.22.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Neurocita.Reactive.0.1.22\lib\net46\Neurocita.Reactive.dll</HintPath>
+    <Reference Include="Neurocita.Reactive, Version=0.1.27.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Neurocita.Reactive.0.1.27\lib\net46\Neurocita.Reactive.dll</HintPath>
     </Reference>
-    <Reference Include="Neurocita.Reactive.Nats, Version=0.1.23.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Neurocita.Reactive.Nats.0.1.23\lib\net46\Neurocita.Reactive.Nats.dll</HintPath>
+    <Reference Include="Neurocita.Reactive.Nats, Version=0.1.24.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Neurocita.Reactive.Nats.0.1.24\lib\net46\Neurocita.Reactive.Nats.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Specialized, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">

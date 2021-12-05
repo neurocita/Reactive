@@ -9,29 +9,15 @@ namespace Neurocita.Reactive
     {
         private readonly DataContractSerializerSettings settings = new DataContractSerializerSettings();
 
-        public DataContractXmlSerializer()
-            : this(new HashSet<Type>())
-        {
-
-        }
-
-        public DataContractXmlSerializer(IEnumerable<Type> knownTypes)
-        {
-            settings.KnownTypes = DataContractUtil.PrepareKnownTypes(knownTypes);
-        }
-
-        public DataContractXmlSerializer(DataContractSerializerSettings settings)
+        internal DataContractXmlSerializer(DataContractSerializerSettings settings)
         {
             this.settings = settings;
-            this.settings.KnownTypes = DataContractUtil.PrepareKnownTypes(this.settings.KnownTypes);
         }
 
-        public DataContractSerializerSettings Settings => settings;
         public string ContentType => "text/xml";
 
         public Stream Serialize<T>(T instance)
         {
-            this.settings.KnownTypes = DataContractUtil.PrepareKnownTypes(this.settings.KnownTypes);
             Type type = instance.GetType();
             (settings.KnownTypes as ISet<Type>).Add(type);
 
@@ -44,7 +30,6 @@ namespace Neurocita.Reactive
 
         public T Deserialize<T>(Stream stream)
         {
-            this.settings.KnownTypes = DataContractUtil.PrepareKnownTypes(this.settings.KnownTypes);
             Type type = typeof(T);
             (settings.KnownTypes as ISet<Type>).Add(type);
 

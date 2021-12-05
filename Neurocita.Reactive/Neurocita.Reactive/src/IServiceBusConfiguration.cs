@@ -4,6 +4,6 @@ namespace Neurocita.Reactive
 {
     public interface IServiceBusConfiguration
     {
-        IServiceBus Create();
+        IServiceBusBuilder CreateBuilder();
     }
 }

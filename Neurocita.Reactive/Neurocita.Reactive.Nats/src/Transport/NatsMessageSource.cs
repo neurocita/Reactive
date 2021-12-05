@@ -16,11 +16,11 @@ namespace Neurocita.Reactive.Nats
         private readonly IDisposable refCounter;
         private readonly Lazy<INATSObservable<Msg>> natsObservanle;
         
-        public NatsMessageSource(NatsConnectionManager sharedConnection, string path)
+        public NatsMessageSource(NatsConnectionManager connectionManager, string path)
         {
             this.path = path;
-            refCounter = sharedConnection.GetDisposable();
-            natsObservanle = sharedConnection.GetMessages(path);
+            refCounter = connectionManager.GetDisposable();
+            natsObservanle = connectionManager.GetMessages(path);
             messages = Observable.Create<IMessage<Stream>>(observer =>
             {
                 IObservable<IMessage<Stream>> observable =
