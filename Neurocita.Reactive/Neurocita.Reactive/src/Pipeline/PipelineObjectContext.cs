@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Neurocita.Reactive
+namespace Neurocita.Reactive.Pipeline
 {
     internal class PipelineObjectContext<TDataContract> : IPipelineObjectContext<TDataContract>
         where TDataContract : IDataContract

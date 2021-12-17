@@ -1,8 +1,8 @@
-﻿namespace Neurocita.Reactive
+﻿namespace Neurocita.Reactive.Serialization
 {
     public class XmlSerializerFactory : ISerializerFactory
     {
-        public ISerializer CreateSerializer()
+        public ISerializer Create()
         {
             return new XmlSerializer();
         }

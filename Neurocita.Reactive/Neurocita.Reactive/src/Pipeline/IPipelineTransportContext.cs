@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Neurocita.Reactive
+namespace Neurocita.Reactive.Pipeline
 {
     public interface IPipelineTransportContext : IPipelineContext
     {

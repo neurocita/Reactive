@@ -1,0 +1,20 @@
+# docker-compose -p swiftmq-test up -d
+# https://www.swiftmq.com/docs/docs/ce/install/
+version: '3.3'
+
+services:
+  swiftmq-test:
+    container_name: swiftmq-test
+    image: "iitsoftware/swiftmq-ce:latest"
+    ports:
+      - "4001:4001" # JMS
+      - "5672:5672" # AMQP
+      - "1883:1883" # MQTT
+      - "4100:4100" # Routing Listener
+    #environment:
+    #  - SWIFTMQ_PRECONFIG=/swiftmq/preconfig/mynode.xml
+    #volumes:
+    #    - ${PWD}/router/preconfig:/swiftmq/preconfig
+    #    - ${PWD}/router/data:/swiftmq/data
+    #extra_hosts:
+    #    - "dockerhost:${myIP}"

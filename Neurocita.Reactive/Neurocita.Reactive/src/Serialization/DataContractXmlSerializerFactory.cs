@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Neurocita.Reactive
+namespace Neurocita.Reactive.Serialization
 {
     public class DataContractXmlSerializerFactory : ISerializerFactory
     {
@@ -8,7 +8,7 @@ namespace Neurocita.Reactive
 
         public DataContractSerializerSettings Settings => settings;
 
-        public ISerializer CreateSerializer()
+        public ISerializer Create()
         {
             settings.KnownTypes = DataContractUtil.PrepareKnownTypes(settings.KnownTypes);
             return new DataContractXmlSerializer(settings);

@@ -1,7 +1,7 @@
-﻿namespace Neurocita.Reactive
+﻿namespace Neurocita.Reactive.Transport
 {
     public interface INode
     {
-        string Path { get; }
+        string NodePath { get; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Neurocita.Reactive
+namespace Neurocita.Reactive.Serialization
 {
     internal static class DataContractUtil
     {

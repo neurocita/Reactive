@@ -5,8 +5,10 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Linq;
 using System.Reactive.Linq;
+using Neurocita.Reactive.Transport;
+using Neurocita.Reactive.Serialization;
 
-namespace Neurocita.Reactive
+namespace Neurocita.Reactive.Pipeline
 {
     public static class ObservableExtensions
     {
@@ -15,15 +17,15 @@ namespace Neurocita.Reactive
         {
             return observable.Select(context =>
             {
-                TDataContract instancce = serializer.Deserialize<TDataContract>(context.Message.Body);
-                return new PipelineObjectContext<TDataContract>(PipelineDirection.Inbound, new ObjectMessage<TDataContract>(instancce, context.Message.Headers));
+                TDataContract instance = serializer.Deserialize<TDataContract>(context.Message.Body);
+                return new PipelineObjectContext<TDataContract>(PipelineDirection.Inbound, new ObjectMessage<TDataContract>(instance, context.Message.Headers));
             });
         }
 
         public static IObservable<IPipelineObjectContext<TDataContract>> Deserialize<TDataContract>(this IObservable<IPipelineTransportContext> observable, ISerializerFactory serializerFactory)
             where TDataContract : IDataContract
         {
-            return observable.Deserialize<TDataContract>(serializerFactory.CreateSerializer());
+            return observable.Deserialize<TDataContract>(serializerFactory.Create());
         }
 
         public static IObservable<IPipelineTransportContext> Serialize<TDataContract>(this IObservable<IPipelineObjectContext<TDataContract>> observable, ISerializer serializer)
@@ -44,7 +46,7 @@ namespace Neurocita.Reactive
         public static IObservable<IPipelineTransportContext> Serialize<TDataContract>(this IObservable<IPipelineObjectContext<TDataContract>> observable, ISerializerFactory serializerFactory)
             where TDataContract : IDataContract
         {
-            return observable.Serialize<TDataContract>(serializerFactory.CreateSerializer());
+            return observable.Serialize<TDataContract>(serializerFactory.Create());
         }
 
         public static IObservable<TDataContract> ToDataContract<TDataContract>(this IObservable<IPipelineObjectContext<TDataContract>> observable)

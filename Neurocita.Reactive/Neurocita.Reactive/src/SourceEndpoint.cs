@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using Neurocita.Reactive.Transport;
+using Neurocita.Reactive.Serialization;
+using Neurocita.Reactive.Pipeline;
 
 namespace Neurocita.Reactive
 {

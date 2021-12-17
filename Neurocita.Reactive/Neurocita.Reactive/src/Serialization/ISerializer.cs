@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Neurocita.Reactive
+namespace Neurocita.Reactive.Serialization
 {
     public interface ISerializer
     {

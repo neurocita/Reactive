@@ -6,25 +6,27 @@ using System.IO;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 
-namespace Neurocita.Reactive.Nats
+namespace Neurocita.Reactive.Transport
 {
-    internal class NatsMessageSource : ITransportMessageSource
+    internal class NatsTransportMessageSource : ITransportMessageSource
     {
-        private readonly string path;
+        private readonly string nodePath;
         private readonly IObservable<IMessage<Stream>> messages;
         private readonly CompositeDisposable subscribers = new CompositeDisposable();
         private readonly IDisposable refCounter;
-        private readonly Lazy<INATSObservable<Msg>> natsObservanle;
+        private readonly Lazy<INATSObservable<Msg>> natsObservable;
+
+        public string NodePath => nodePath;
         
-        public NatsMessageSource(NatsConnectionManager connectionManager, string path)
+        public NatsTransportMessageSource(NatsTransport transport, string nodePath)
         {
-            this.path = path;
-            refCounter = connectionManager.GetDisposable();
-            natsObservanle = connectionManager.GetMessages(path);
+            this.nodePath = nodePath;
+            refCounter = transport.GetDisposable();
+            natsObservable = transport.GetMessages(nodePath);
             messages = Observable.Create<IMessage<Stream>>(observer =>
             {
                 IObservable<IMessage<Stream>> observable =
-                    natsObservanle
+                    natsObservable
                     .Value
                     .Select(msg =>
                     {
@@ -67,7 +69,7 @@ namespace Neurocita.Reactive.Nats
             });
         }
 
-        public string Path => path;
+        public string Path => nodePath;
         public IObservable<IMessage<Stream>> Messages => messages;
 
         public void Dispose() => Dispose(true);

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace Neurocita.Reactive
+namespace Neurocita.Reactive.Transport
 {
     public class TransportMessage : IMessage<Stream>
     {

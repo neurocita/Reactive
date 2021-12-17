@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive.Disposables;
+using Neurocita.Reactive.Configuration;
 
 namespace Neurocita.Reactive
 {
@@ -17,7 +18,7 @@ namespace Neurocita.Reactive
             this.endpoints = new ReadOnlyDictionary<string, IEndpoint>(endpoints);
         }
         
-        public static IServiceBusConfiguration Configure()
+        public static ICanAddTransport Configure()
         {
             return new ServiceBusConfiguration();
         }

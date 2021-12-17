@@ -1,30 +1,32 @@
 ﻿using System.Reactive.Disposables;
+using Neurocita.Reactive.Transport;
+using Neurocita.Reactive.Serialization;
 
 namespace Neurocita.Reactive
 {
     internal class Endpoint : IEndpoint
     {
         private readonly CompositeDisposable disposables = new CompositeDisposable();
-        private readonly ITransportMessageFactory transportMessageFactory;
-        private readonly ISerializerFactory serializerFactory;
-        private readonly string path;
+        private readonly ITransport transport;
+        private readonly ISerializer serializer;
+        private readonly string nodePath;
 
-        public Endpoint(ITransportMessageFactory transportMessageFactory, ISerializerFactory serializerFactory, string path)
+        public Endpoint(ITransport transport, ISerializer serializer, string nodePath)
         {
-            Util.CheckNullArgument(transportMessageFactory);
-            Util.CheckNullArgument(serializerFactory);
-            Util.CheckNullArgument(path);
+            Util.CheckNullArgument(this.transport);
+            Util.CheckNullArgument(serializer);
+            Util.CheckNullArgument(nodePath);
 
-            this.transportMessageFactory = transportMessageFactory;
-            this.serializerFactory = serializerFactory;
-            this.path = path;
+            this.transport = transport;
+            this.serializer = serializer;
+            this.nodePath = nodePath;
         }
 
-        public string Path => path;
+        public string NodePath => nodePath;
 
         public ISinkEndpoint AsSink()
         {
-            ISinkEndpoint sinkEndpoint = new SinkEndpoint(transportMessageFactory.CreateSink(path), serializerFactory.CreateSerializer());
+            ISinkEndpoint sinkEndpoint = new SinkEndpoint(transport.CreateSink(nodePath), serializer);
             if (disposables.IsDisposed)
                 sinkEndpoint.Dispose();
             else
@@ -39,7 +41,7 @@ namespace Neurocita.Reactive
 
         public ISourceEndpoint AsSource()
         {
-            ISourceEndpoint sourceEndpoint = new SourceEndpoint(transportMessageFactory.CreateSource(path), serializerFactory.CreateSerializer());
+            ISourceEndpoint sourceEndpoint = new SourceEndpoint(transport.CreateSource(nodePath), serializer);
             if (disposables.IsDisposed)
                 sourceEndpoint.Dispose();
             else

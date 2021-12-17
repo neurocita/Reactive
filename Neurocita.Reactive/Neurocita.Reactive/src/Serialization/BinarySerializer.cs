@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace Neurocita.Reactive
+namespace Neurocita.Reactive.Serialization
 {
     public class BinarySerializer : ISerializer
     {

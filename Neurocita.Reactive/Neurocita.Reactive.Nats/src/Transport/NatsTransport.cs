@@ -3,20 +3,30 @@ using NATS.Client.Rx;
 using System;
 using System.Reactive.Disposables;
 
-namespace Neurocita.Reactive.Nats
+namespace Neurocita.Reactive.Transport
 {
-    internal class NatsConnectionManager
+    internal class NatsTransport : ITransport
     {
         private readonly Options options;
         private readonly object mutex = new object();
         private Lazy<IConnection> connection;
         private RefCountDisposable refCountDisposable;
 
-        internal NatsConnectionManager(Options options)
+        internal NatsTransport(Options options)
         {
             this.options = options;
             connection = new Lazy<IConnection>(OnConnectionInit);
             refCountDisposable = new RefCountDisposable(Disposable.Create(OnDisposed));
+        }
+
+        public ITransportMessageSource CreateSource(string source)
+        {
+            return new NatsTransportMessageSource(this, source);
+        }
+
+        public ITransportMessageSink CreateSink(string destination)
+        {
+            return new NatsTransportMessageSink(this, destination);
         }
 
         internal Lazy<INATSObservable<Msg>> GetMessages(string subject)

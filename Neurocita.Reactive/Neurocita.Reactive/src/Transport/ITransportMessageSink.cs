@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Neurocita.Reactive
+namespace Neurocita.Reactive.Transport
 {
     public interface ITransportMessageSink : INode, IDisposable
     {

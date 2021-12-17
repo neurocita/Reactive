@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
+using Neurocita.Reactive.Transport;
 
-namespace Neurocita.Reactive
+namespace Neurocita.Reactive.Pipeline
 {
     public static class PipelineObservable
     {
@@ -10,9 +11,14 @@ namespace Neurocita.Reactive
             return transportMessageSource.Messages;
         }
 
-        public static IObservable<IMessage<Stream>> Create(ITransportMessageFactory transportMessageFactory, string source)
+        public static IObservable<IMessage<Stream>> Create(ITransport transport, string nodePath)
         {
-            return transportMessageFactory.CreateSource(source).Messages;
+            return transport.CreateSource(nodePath).Messages;
+        }
+
+        public static IObservable<IMessage<Stream>> Create(ITransportFactory transportFactory, string nodePath)
+        {
+            return transportFactory.Create().CreateSource(nodePath).Messages;
         }
     }
 }

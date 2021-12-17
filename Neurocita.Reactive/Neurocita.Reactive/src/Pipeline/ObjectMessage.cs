@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Neurocita.Reactive
+namespace Neurocita.Reactive.Pipeline
 {
     public class ObjectMessage<TDataContract> : IMessage<TDataContract>
         where TDataContract : IDataContract

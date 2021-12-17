@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization.Json;
 
-namespace Neurocita.Reactive
+namespace Neurocita.Reactive.Serialization
 {
     public class DataContractJsonSerializerFactory : ISerializerFactory
     {
@@ -8,7 +8,7 @@ namespace Neurocita.Reactive
 
         public DataContractJsonSerializerSettings Settings => settings;
 
-        public ISerializer CreateSerializer()
+        public ISerializer Create()
         {
             settings.KnownTypes = DataContractUtil.PrepareKnownTypes(settings.KnownTypes);
             return new DataContractJsonSerializer(settings);

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Neurocita.Reactive
+namespace Neurocita.Reactive.Serialization
 {
     [Serializable]
     [DataContract]

@@ -6,25 +6,27 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Disposables;
 
-namespace Neurocita.Reactive.Nats
+namespace Neurocita.Reactive.Transport
 {
-    internal class NatsMessageSink : ITransportMessageSink
+    internal class NatsTransportMessageSink : ITransportMessageSink
     {
-        private readonly string path;
+        private readonly string nodePath;
         private readonly CompositeDisposable subscribers = new CompositeDisposable();
         //private readonly ILogger logger;
         private readonly IDisposable refCounter;
         private readonly Action<Msg> publish;
+
+        public string NodePath => nodePath;
         
-        public NatsMessageSink(NatsConnectionManager sharedConnection, string path)
+        public NatsTransportMessageSink(NatsTransport transport, string nodePath)
         {
             //logger = LogManager.GetFactory(this).CreateLogger(this);
-            this.path = path;
-            refCounter = sharedConnection.GetDisposable();
-            publish = sharedConnection.Publish;
+            this.nodePath = nodePath;
+            refCounter = transport.GetDisposable();
+            publish = transport.Publish;
         }
 
-        public string Path => path;
+        public string Path => nodePath;
 
         public IDisposable Observe(IObservable<IMessage<Stream>> messages)
         {
@@ -40,7 +42,7 @@ namespace Neurocita.Reactive.Nats
                     if (message.Body.Read(data, 0, data.Length) != message.Body.Length)
                         throw new ArgumentOutOfRangeException(nameof(message));
 
-                    Msg msg = new Msg(path, data);
+                    Msg msg = new Msg(nodePath, data);
 
                     if (message.Headers.ContainsKey(MessageHeaders.ReplyTo))
                         msg.Reply = message.Headers[MessageHeaders.ReplyTo] as string;

@@ -1,4 +1,4 @@
-﻿namespace Neurocita.Reactive
+﻿namespace Neurocita.Reactive.Pipeline
 {
     public enum PipelineDirection : byte
     {

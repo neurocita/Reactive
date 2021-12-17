@@ -1,8 +1,8 @@
-﻿namespace Neurocita.Reactive
+﻿namespace Neurocita.Reactive.Serialization
 {
     public class BinarySerializerFactory : ISerializerFactory
     {
-        public ISerializer CreateSerializer()
+        public ISerializer Create()
         {
             return new BinarySerializer();
         }

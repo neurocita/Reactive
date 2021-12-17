@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 
-namespace Neurocita.Reactive
+namespace Neurocita.Reactive.Serialization
 {
     public class DataContractXmlSerializer : ISerializer
     {

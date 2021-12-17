@@ -3,20 +3,19 @@ using System;
 using System.Reactive.Disposables;
 using System.Reflection;
 
-namespace Neurocita.Reactive.Nats
+namespace Neurocita.Reactive.Transport
 {
-    public class NatsMessageFactory : ITransportMessageFactory
+    public class NatsTransportFactory : ITransportFactory
     {
         private readonly Options options;
-        private readonly NatsConnectionManager connectionManager;
 
-        public NatsMessageFactory()
+        public NatsTransportFactory()
             : this(ConnectionFactory.GetDefaultOptions())
         {
             
         }
 
-        public NatsMessageFactory(string url, bool secure = false)
+        public NatsTransportFactory(string url, bool secure = false)
             : this()
         {
             if (string.IsNullOrWhiteSpace(url))
@@ -28,7 +27,7 @@ namespace Neurocita.Reactive.Nats
             options.Secure = secure;
         }
 
-        public NatsMessageFactory(string url, string credentialsPath)
+        public NatsTransportFactory(string url, string credentialsPath)
             : this(url)
         {
             if (string.IsNullOrWhiteSpace(credentialsPath))
@@ -37,7 +36,7 @@ namespace Neurocita.Reactive.Nats
             options.SetUserCredentials(credentialsPath);
         }
 
-        public NatsMessageFactory(string url, string jwt, string privateNkey)
+        public NatsTransportFactory(string url, string jwt, string privateNkey)
             : this(url)
         {
             if (string.IsNullOrWhiteSpace(jwt))
@@ -48,20 +47,14 @@ namespace Neurocita.Reactive.Nats
             options.SetUserCredentials(jwt, privateNkey);
         }
 
-        public NatsMessageFactory(Options options)
+        public NatsTransportFactory(Options options)
         {
             this.options = options;
-            connectionManager = new NatsConnectionManager(options);
         }
 
-        public ITransportMessageSource CreateSource(string source)
+        public ITransport Create()
         {
-            return new NatsMessageSource(connectionManager, source);
-        }
-
-        public ITransportMessageSink CreateSink(string destination)
-        {
-            return new NatsMessageSink(connectionManager, destination);
+            return new NatsTransport(options);
         }
     }
 }

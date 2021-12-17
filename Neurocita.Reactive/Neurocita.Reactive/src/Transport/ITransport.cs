@@ -1,6 +1,6 @@
-﻿namespace Neurocita.Reactive
+namespace Neurocita.Reactive.Transport
 {
-    public interface ITransportMessageFactory
+    public interface ITransport
     {
         ITransportMessageSource CreateSource(string source);
         ITransportMessageSink CreateSink(string destination);
