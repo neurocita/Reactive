@@ -23,13 +23,13 @@ namespace Neurocita.Reactive.Configuration
             return this;
         }
 
-        public ICanAddEndpointOrBuild WithEndpoint(string name, string nodePath)
+        public ICanAddEndpointOrCreate WithEndpoint(string name, string nodePath)
         {
             this.endpointConfigurations.Add(name, new EndpointConfiguration(nodePath));
             return this;
         }
 
-        public IServiceBus Build()
+        public IServiceBus Create()
         {
             IDictionary<string, IEndpoint> endpoints = new Dictionary<string, IEndpoint>();
             foreach (var endpointConfiguration in endpointConfigurations)

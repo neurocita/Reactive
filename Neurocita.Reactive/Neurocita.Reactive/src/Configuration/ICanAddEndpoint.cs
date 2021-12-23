@@ -2,6 +2,6 @@ namespace Neurocita.Reactive.Configuration
 {
     public interface ICanAddEndpoint
     {
-        ICanAddEndpointOrBuild WithEndpoint(string name, string nodePath);
+        ICanAddEndpointOrCreate WithEndpoint(string name, string nodePath);
     }
 }
