@@ -1,4 +1,6 @@
-﻿using Neurocita.Reactive;
+﻿using Neurocita.Reactive.Transport;
+using Neurocita.Reactive.Serialization;
+using Neurocita.Reactive.Pipeline;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -15,7 +17,7 @@ namespace Neurocita.Reactive.UnitTest
         [TestMethod]
         public void DataContractJson()
         {
-            ISerializer serializer = new DataContractJsonSerializerFactory().CreateSerializer();
+            ISerializer serializer = new DataContractJsonSerializerFactory().Create();
             IValueTypeDataContract<int> value = new ValueTypeDataContract<int>(12);
             IMessage<Stream> message = new TransportMessage(serializer.Serialize(value));
             StreamReader streamReader = new StreamReader(message.Body);
@@ -28,7 +30,7 @@ namespace Neurocita.Reactive.UnitTest
         [TestMethod]
         public void DataContractXml()
         {
-            ISerializer serializer = new DataContractXmlSerializerFactory().CreateSerializer();
+            ISerializer serializer = new DataContractXmlSerializerFactory().Create();
             IValueTypeDataContract<int> value = new ValueTypeDataContract<int>(23);
             IMessage<Stream> message = new TransportMessage(serializer.Serialize(value));
             StreamReader streamReader = new StreamReader(message.Body);
@@ -41,7 +43,7 @@ namespace Neurocita.Reactive.UnitTest
         [TestMethod]
         public void Xml()
         {
-            ISerializer serializer = new XmlSerializerFactory().CreateSerializer();
+            ISerializer serializer = new XmlSerializerFactory().Create();
             IValueTypeDataContract<int> value = new ValueTypeDataContract<int>(32);
             IMessage<Stream> message2 = new TransportMessage(serializer.Serialize(value));
             StreamReader streamReader2 = new StreamReader(message2.Body);
@@ -54,7 +56,7 @@ namespace Neurocita.Reactive.UnitTest
         [TestMethod]
         public void Binary()
         {
-            ISerializer serializer = new BinarySerializerFactory().CreateSerializer();
+            ISerializer serializer = new BinarySerializerFactory().Create();
             IValueTypeDataContract<int> value = new ValueTypeDataContract<int>(167);
             IMessage<Stream> message = new TransportMessage(serializer.Serialize(value));
             value = serializer.Deserialize<ValueTypeDataContract<int>>(message.Body);

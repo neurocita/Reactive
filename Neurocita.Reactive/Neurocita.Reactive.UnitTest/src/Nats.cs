@@ -1,7 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NATS.Client;
 using NATS.Client.Rx;
-using Neurocita.Reactive.Nats;
+using Neurocita.Reactive.Transport;
+using Neurocita.Reactive.Serialization;
+using Neurocita.Reactive.Pipeline;
+using Neurocita.Reactive.Configuration;
 using System;
 using System.Reactive.Linq;
 using System.Threading;
@@ -97,11 +100,11 @@ namespace Neurocita.Reactive.UnitTest
         [TestMethod]
         public void Pipeline()
         {
-            ITransportMessageFactory transportMessageFactory = new NatsMessageFactory();
-            ISerializer serializer = new DataContractJsonSerializerFactory().CreateSerializer();
+            ITransport transport = new NatsTransportFactory().Create();
+            ISerializer serializer = new DataContractJsonSerializerFactory().Create();
             using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
             {
-                using (ITransportMessageSource transportMessageSource = transportMessageFactory.CreateSource(node))
+                using (ITransportMessageSource transportMessageSource = transport.CreateSource(node))
                 {
                     using (PipelineObservable.Create(transportMessageSource)
                         .ToPipelineContext()
@@ -113,7 +116,7 @@ namespace Neurocita.Reactive.UnitTest
                                     , exception => Console.WriteLine(exception)
                                     , () => cancellationTokenSource.Cancel()))
                     {
-                        using (ITransportMessageSink transportMessageSink = transportMessageFactory.CreateSink(node))
+                        using (ITransportMessageSink transportMessageSink = transport.CreateSink(node))
                         {
                             using (transportMessageSink.Observe(Observable.Range(1, 10)
                                 //.ObserveOn(new EventLoopScheduler())
@@ -125,7 +128,7 @@ namespace Neurocita.Reactive.UnitTest
                             {
                                 try
                                 {
-                                    Task.Delay(TimeSpan.FromSeconds(60), cancellationTokenSource.Token).Wait();
+                                    Task.Delay(TimeSpan.FromSeconds(10), cancellationTokenSource.Token).Wait();
                                 }
                                 catch (AggregateException exception)
                                 {

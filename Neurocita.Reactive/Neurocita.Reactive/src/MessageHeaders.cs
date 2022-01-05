@@ -14,5 +14,6 @@
         public const string ExpiryTime = "x-neurocita-expiry-time";
         public const string CreationTime = "x-neurocita-creationn-time";
         public const string Ttl = "x-neurocita-ttl";
+        public const string ObservableEvent = "x-neurocita-observable-event";       // OnNext, OnError, OnCompleted
     }
 }

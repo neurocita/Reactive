@@ -9,13 +9,64 @@
             "type": "shell",
             "args": [
                 "build",
-                "-f netcoreapp3.1",
+                "-f",
+                "netcoreapp3.1",
                 // Ask dotnet build to generate full paths for file names.
                 "/property:GenerateFullPaths=true",
                 // Do not generate summary otherwise it leads to duplicate errors in Problems panel
                 "/consoleloggerparameters:NoSummary"
             ],
+            
+            "options": {
+                "cwd": "${workspaceFolder}${pathSeparator}Neurocita.Reactive.Nats"
+            },
             "group": "build",
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "test",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "test",
+                "Neurocita.Reactive.MSTest.Core.csproj",
+                "-f",
+                "netcoreapp3.1",
+                // Ask dotnet build to generate full paths for file names.
+                //"/property:GenerateFullPaths=true",
+                // Do not generate summary otherwise it leads to duplicate errors in Problems panel
+                //"/consoleloggerparameters:NoSummary"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}${pathSeparator}Neurocita.Reactive.UnitTest"
+            },
+            "group": "test",
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "test console",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "watch",
+                "--project:\"Neurocita.Reactive.MSTest.Core.csproj\"",
+                "test",
+                "Neurocita.Reactive.MSTest.core.csproj",
+                "--framework:\"netcoreapp3.1\"",
+                //"netcoreapp3.1",
+                "--filter:\"FullyQualifiedName=Neurocita.Reactive.UnitTest.Nats.Pipeline\"",
+                "--logger:\"console;verbosity=detailed\""
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}${pathSeparator}Neurocita.Reactive.UnitTest"
+            },
+            "group": "test",
             "presentation": {
                 "reveal": "silent"
             },

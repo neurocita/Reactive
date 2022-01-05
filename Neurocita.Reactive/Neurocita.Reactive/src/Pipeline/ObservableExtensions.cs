@@ -15,11 +15,25 @@ namespace Neurocita.Reactive.Pipeline
         public static IObservable<IPipelineObjectContext<TDataContract>> Deserialize<TDataContract>(this IObservable<IPipelineTransportContext> observable, ISerializer serializer)
             where TDataContract : IDataContract
         {
-            return observable.Select(context =>
-            {
-                TDataContract instance = serializer.Deserialize<TDataContract>(context.Message.Body);
-                return new PipelineObjectContext<TDataContract>(PipelineDirection.Inbound, new ObjectMessage<TDataContract>(instance, context.Message.Headers));
-            });
+            return observable
+                .TakeUntil(other => (string) other.Message?.Headers?[MessageHeaders.ObservableEvent] == "OnCompleted")
+                .Select(context =>
+                {
+                    IDictionary<string, object> headers = context.Message?.Headers ?? new Dictionary<string, object>();
+                    if (!headers.ContainsKey(MessageHeaders.ObservableEvent))
+                        headers.Add(MessageHeaders.ObservableEvent, "OnNext");
+                    
+                    switch (headers[MessageHeaders.ObservableEvent])
+                    {
+                        case "OnError":
+                            Exception exception = serializer.Deserialize<Exception>(context.Message.Body);
+                            throw exception;
+
+                        default:
+                            TDataContract instance = serializer.Deserialize<TDataContract>(context.Message.Body);
+                            return new PipelineObjectContext<TDataContract>(PipelineDirection.Inbound, new ObjectMessage<TDataContract>(instance, context.Message.Headers));
+                    }              
+                });
         }
 
         public static IObservable<IPipelineObjectContext<TDataContract>> Deserialize<TDataContract>(this IObservable<IPipelineTransportContext> observable, ISerializerFactory serializerFactory)
@@ -31,15 +45,42 @@ namespace Neurocita.Reactive.Pipeline
         public static IObservable<IPipelineTransportContext> Serialize<TDataContract>(this IObservable<IPipelineObjectContext<TDataContract>> observable, ISerializer serializer)
             where TDataContract : IDataContract
         {
-            return observable.Select(context =>
+            return observable
+            .Select(context =>
             {
                 IDictionary<string, object> headers = context.Message.Headers ?? new Dictionary<string, object>();
                 if (!headers.ContainsKey(MessageHeaders.ContentType) && !string.IsNullOrWhiteSpace(serializer.ContentType))
                     headers.Add(MessageHeaders.ContentType, serializer.ContentType);
+                headers[MessageHeaders.ObservableEvent] = "OnNext";
 
                 Stream stream = serializer.Serialize(context.Message.Body);
-                TransportMessage transportMessage = new TransportMessage(stream, context.Message.Headers);
+                TransportMessage transportMessage = new TransportMessage(stream, headers);
                 return new PipelineTransportContext(context.Direction, transportMessage) as IPipelineTransportContext;
+            })
+            .Concat(Observable.Return<IPipelineTransportContext>(
+                new Lazy<IPipelineTransportContext>(() =>
+                {
+                    IDictionary<string, object> headers = new Dictionary<string, object>();
+                    headers.Add(MessageHeaders.ContentType, serializer.ContentType);
+                    headers.Add(MessageHeaders.ObservableEvent, "OnCompleted");
+
+                    TransportMessage transportMessage = new TransportMessage(null, headers);
+                    return new PipelineTransportContext(PipelineDirection.Outbound, transportMessage) as IPipelineTransportContext;
+                })
+                .Value
+            ))
+            .Catch<IPipelineTransportContext, Exception>(exception =>
+            {
+                IDictionary<string, object> headers = new Dictionary<string, object>();
+                if (!headers.ContainsKey(MessageHeaders.ContentType) && !string.IsNullOrWhiteSpace(serializer.ContentType))
+                    headers.Add(MessageHeaders.ContentType, serializer.ContentType);
+                headers[MessageHeaders.ObservableEvent] = "OnError";
+                headers[MessageHeaders.QualifiedTypeName] = exception.GetType().FullName;
+                
+                Stream stream = serializer.Serialize(exception);
+                TransportMessage transportMessage = new TransportMessage(stream, headers);
+                IPipelineTransportContext pipelineTransportContext = new PipelineTransportContext(PipelineDirection.Outbound, transportMessage);
+                return Observable.Return<IPipelineTransportContext>(pipelineTransportContext);
             });
         }
 

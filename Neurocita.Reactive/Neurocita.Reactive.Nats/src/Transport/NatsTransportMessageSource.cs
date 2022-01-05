@@ -30,13 +30,13 @@ namespace Neurocita.Reactive.Transport
                     .Value
                     .Select(msg =>
                     {
-                        IDictionary<string, object> headers = msg.HasHeaders ? new Dictionary<string, object>() : null;
-                        if (headers != null)
+                        IDictionary<string, object> headers = new Dictionary<string, object>();
+
+                        if (msg.HasHeaders)
                         {
                             foreach (string key in msg.Header.Keys)
                             {
                                 headers.Add(key, msg.Header[key]);
-                                Console.WriteLine("Header: ", key);
                             }
 
                             if (!string.IsNullOrWhiteSpace(msg.Reply))
@@ -59,9 +59,9 @@ namespace Neurocita.Reactive.Transport
                             }
                             */
                         }
-
-                        Stream stream = new MemoryStream(msg.Data);
-                        return new TransportMessage(stream, headers);
+                        
+                        Stream data = new MemoryStream(msg.Data);
+                        return new TransportMessage(data, headers);
                     });
                 IDisposable disposable = observable.Subscribe(observer);
                 subscribers.Add(disposable);
