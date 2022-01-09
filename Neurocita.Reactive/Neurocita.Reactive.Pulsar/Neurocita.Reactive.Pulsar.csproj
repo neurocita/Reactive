@@ -10,4 +10,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="DotPulsar" Version="2.0.1" />
+  </ItemGroup>
+
 </Project>
