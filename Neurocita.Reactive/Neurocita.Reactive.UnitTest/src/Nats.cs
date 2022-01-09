@@ -1,10 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NATS.Client;
 using NATS.Client.Rx;
-using Neurocita.Reactive.Transport;
-using Neurocita.Reactive.Serialization;
 using Neurocita.Reactive.Pipeline;
-using Neurocita.Reactive.Configuration;
+using Neurocita.Reactive.Serialization;
+using Neurocita.Reactive.Transport;
 using System;
 using System.Reactive.Linq;
 using System.Threading;
@@ -128,11 +127,14 @@ namespace Neurocita.Reactive.UnitTest
                             {
                                 try
                                 {
-                                    Task.Delay(TimeSpan.FromSeconds(10), cancellationTokenSource.Token).Wait();
+                                    Task.Delay(TimeSpan.FromSeconds(20), cancellationTokenSource.Token).Wait();
                                 }
                                 catch (AggregateException exception)
                                 {
-                                    Console.WriteLine(exception);
+                                    if (exception.InnerException is TaskCanceledException)
+                                        Console.WriteLine("Sequence completed");
+                                    else
+                                        throw exception.InnerException;
                                 }
                             }
                         }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31229.75
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neurocita.Reactive.Pipes", "Neurocita.Reactive.Pipes\Neurocita.Reactive.Pipes.csproj", "{03C72E21-284C-4834-81A0-A8A2D1273084}"
 EndProject
@@ -25,9 +25,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neurocita.Reactive.Pulsar",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neurocita.Reactive.Nsq", "Neurocita.Reactive.Nsq\Neurocita.Reactive.Nsq.csproj", "{DABAA3C4-4F08-434F-BF5D-EC353102BBB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.FluentFTP", "Neurocita.Reactive.FluentFTP\Neurocita.Reactive.FluentFTP.csproj", "{AFA94D8E-A2E5-43DF-870A-748F2F7A1516}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neurocita.Reactive.FluentFTP", "Neurocita.Reactive.FluentFTP\Neurocita.Reactive.FluentFTP.csproj", "{AFA94D8E-A2E5-43DF-870A-748F2F7A1516}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.MSTest.Core", "Neurocita.Reactive.UnitTest\Neurocita.Reactive.MSTest.Core.csproj", "{A1A8F767-C951-48BB-8377-326796A50655}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neurocita.Reactive.MSTest.Core", "Neurocita.Reactive.UnitTest\Neurocita.Reactive.MSTest.Core.csproj", "{A1A8F767-C951-48BB-8377-326796A50655}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.MSTest.Framework", "Neurocita.Reactive.UnitTest\Neurocita.Reactive.MSTest.Framework\Neurocita.Reactive.MSTest.Framework.csproj", "{BA9CF172-595F-47CC-9BBC-BC78BDE401E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +89,10 @@ Global
 		{A1A8F767-C951-48BB-8377-326796A50655}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1A8F767-C951-48BB-8377-326796A50655}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1A8F767-C951-48BB-8377-326796A50655}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA9CF172-595F-47CC-9BBC-BC78BDE401E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA9CF172-595F-47CC-9BBC-BC78BDE401E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA9CF172-595F-47CC-9BBC-BC78BDE401E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA9CF172-595F-47CC-9BBC-BC78BDE401E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

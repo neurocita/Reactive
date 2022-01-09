@@ -1,12 +1,7 @@
-﻿using Neurocita.Reactive.Transport;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Neurocita.Reactive.Serialization;
-using Neurocita.Reactive.Pipeline;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Neurocita.Reactive.Transport;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 namespace Neurocita.Reactive.UnitTest

@@ -34,19 +34,30 @@ namespace Neurocita.Reactive.Transport
             IObserver<IMessage<Stream>> observer = Observer.Create<IMessage<Stream>>(
                 message =>
                 {
-                    if (message?.Body?.Length <= 0)
-                        return;
+                    Msg msg = new Msg(nodePath);
 
-                    message.Body.Position = 0;
-                    byte[] data = new byte[message.Body.Length];
-                    if (message.Body.Read(data, 0, data.Length) != message.Body.Length)
-                        throw new ArgumentOutOfRangeException(nameof(message));
+                    if (message?.Body?.Length > 0)
+                    {
+                        msg.Data = new byte[message.Body.Length];
+                        message.Body.Position = 0;
+                        if (message.Body.Read(msg.Data, 0, msg.Data.Length) != message.Body.Length)
+                            throw new ArgumentOutOfRangeException(nameof(message));
+                    }
 
-                    Msg msg = new Msg(nodePath, data);
-
-                    if (message.Headers.ContainsKey(MessageHeaders.ReplyTo))
-                        msg.Reply = message.Headers[MessageHeaders.ReplyTo] as string;
-                    // ToDo: Headers, reply, ...
+                    if (message?.Headers != null)
+                    {
+                        msg.Header = new MsgHeader();
+                        foreach (var header in message?.Headers)
+                        {
+                            msg.Header.Add(header.Key, header.Value.ToString());
+                            switch (header.Key)
+                            {
+                                case MessageHeaders.ReplyTo:
+                                    msg.Reply = (string) header.Value;
+                                    break;
+                            }
+                        }
+                    }
 
                     publish.Invoke(msg);
                 },

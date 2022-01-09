@@ -10,11 +10,11 @@
     <RepositoryUrl>https://github.com/neurocita/Reactive</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <Description>Transport implementation for NATS usable in reactive extensions</Description>
-    <RestoreSources>$(RestoreSources);C:/Users/marku/OneDrive/Source/Reactive/Neurocita.Reactive/Neurocita.Reactive/bin/Debug;https://api.nuget.org/v3/index.json</RestoreSources>
+    <RestoreSources>$(RestoreSources);https://api.nuget.org/v3/index.json</RestoreSources>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NATS.Client" Version="0.14.3" />
+    <PackageReference Include="NATS.Client" Version="0.14.4" />
   </ItemGroup>
 
   <ItemGroup>

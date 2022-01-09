@@ -16,13 +16,15 @@ namespace Neurocita.Reactive.Pipeline
             where TDataContract : IDataContract
         {
             return observable
-                .TakeUntil(other => (string) other.Message?.Headers?[MessageHeaders.ObservableEvent] == "OnCompleted")
+                .TakeUntil(other => (string)other.Message?.Headers?[MessageHeaders.ObservableEvent] == "OnCompleted")
+                .SkipLast(1)
+                //.Concat(Observable.Empty<IPipelineTransportContext>())
                 .Select(context =>
                 {
                     IDictionary<string, object> headers = context.Message?.Headers ?? new Dictionary<string, object>();
                     if (!headers.ContainsKey(MessageHeaders.ObservableEvent))
                         headers.Add(MessageHeaders.ObservableEvent, "OnNext");
-                    
+
                     switch (headers[MessageHeaders.ObservableEvent])
                     {
                         case "OnError":
@@ -32,7 +34,7 @@ namespace Neurocita.Reactive.Pipeline
                         default:
                             TDataContract instance = serializer.Deserialize<TDataContract>(context.Message.Body);
                             return new PipelineObjectContext<TDataContract>(PipelineDirection.Inbound, new ObjectMessage<TDataContract>(instance, context.Message.Headers));
-                    }              
+                    }
                 });
         }
 
@@ -45,6 +47,16 @@ namespace Neurocita.Reactive.Pipeline
         public static IObservable<IPipelineTransportContext> Serialize<TDataContract>(this IObservable<IPipelineObjectContext<TDataContract>> observable, ISerializer serializer)
             where TDataContract : IDataContract
         {
+            var onCompleted = new Lazy<IPipelineTransportContext>(() =>
+            {
+                IDictionary<string, object> headers = new Dictionary<string, object>();
+                headers.Add(MessageHeaders.ContentType, serializer.ContentType);
+                headers.Add(MessageHeaders.ObservableEvent, "OnCompleted");
+
+                TransportMessage transportMessage = new TransportMessage(null, headers);
+                return new PipelineTransportContext(PipelineDirection.Outbound, transportMessage) as IPipelineTransportContext;
+            });
+
             return observable
             .Select(context =>
             {
@@ -57,18 +69,7 @@ namespace Neurocita.Reactive.Pipeline
                 TransportMessage transportMessage = new TransportMessage(stream, headers);
                 return new PipelineTransportContext(context.Direction, transportMessage) as IPipelineTransportContext;
             })
-            .Concat(Observable.Return<IPipelineTransportContext>(
-                new Lazy<IPipelineTransportContext>(() =>
-                {
-                    IDictionary<string, object> headers = new Dictionary<string, object>();
-                    headers.Add(MessageHeaders.ContentType, serializer.ContentType);
-                    headers.Add(MessageHeaders.ObservableEvent, "OnCompleted");
-
-                    TransportMessage transportMessage = new TransportMessage(null, headers);
-                    return new PipelineTransportContext(PipelineDirection.Outbound, transportMessage) as IPipelineTransportContext;
-                })
-                .Value
-            ))
+            .Concat(Observable.Return<IPipelineTransportContext>(onCompleted.Value))
             .Catch<IPipelineTransportContext, Exception>(exception =>
             {
                 IDictionary<string, object> headers = new Dictionary<string, object>();
@@ -204,46 +205,5 @@ namespace Neurocita.Reactive.Pipeline
                                             )
                                 );
         }
-        
-        /*
-        public static IEndpoint<T> ToEndpoint<T>(this IObservable<T> observable, IEndpointConfiguration configuration)
-        {
-            return configuration.Create<T>(observable);
-        }
-
-        internal static IObservable<IMessage<T>> AsObjectMessage<T>(this IObservable<T> observable, IDictionary<string, object> headers = null)
-        {
-            return observable.Select(instance => new ObjectMessage<T>(instance, headers));
-        }
-
-        internal static IObservable<IMessage<T>> AsObjectMessage<T>(this IObservable<ITransportPipelineContext> observable, IDeserializer deserializer)
-        {
-            return observable.Select(context => new ObjectMessage<T>(deserializer.Deserialize<T>(context.Message.Body), context.Message.Headers));
-        }
-
-        internal static IObservable<ITransportPipelineContext> AsTransportPipelineContext<T>(this IObservable<IMessage<T>> observable, IRuntimeContext runtimeContext, ISerializer serializer)
-        {
-            return observable.Select(message => new TransportPipelineContext(runtimeContext, new TransportMessage(serializer.Serialize(message.Body), message.Headers)));
-        }
-
-        internal static IObservable<ITransportPipelineContext> AsTransportPipelineContext<T>(this IObservable<T> observable, IRuntimeContext runtimeContext, ISerializer serializer, IDictionary<string, object> headers = null)
-        {
-            return observable.Select(instance => new TransportPipelineContext(runtimeContext, new TransportMessage(serializer.Serialize(instance), headers)));
-        }
-
-        internal static IObservable<ITransportPipelineContext> Intercept(this IObservable<ITransportPipelineContext> observable, Func<ITransportPipelineContext, ITransportPipelineContext> interceptor)
-        {
-            return observable.Do(context => interceptor(context));
-        }
-
-        internal static IObservable<ITransportPipelineContext> Intercept(this IObservable<ITransportPipelineContext> observable, ITransportPipelineInterceptor interceptor)
-        {
-            return observable.Do(context => interceptor.Invoke(context));
-        }
-        */
-        //internal static IDisposable ToTransport(this IObservable<ITransportPipelineContext> observable, ITransport transport)
-        //{
-        //    return observable.Subscribe(transport);
-        //}
     }
 }

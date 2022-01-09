@@ -34,7 +34,7 @@ namespace Neurocita.Reactive.Transport
 
                         if (msg.HasHeaders)
                         {
-                            foreach (string key in msg.Header.Keys)
+                            foreach (string key in msg?.Header?.Keys)
                             {
                                 headers.Add(key, msg.Header[key]);
                             }
@@ -45,19 +45,7 @@ namespace Neurocita.Reactive.Transport
                                 else
                                     headers.Add(MessageHeaders.ReplyTo, msg.Reply);
                             // ... ??? ...
-
                             // ToDo: Standard headers? ...
-                            /*
-                            foreach(string key in msg.Header.Keys)
-                            {
-                                switch (key)
-                                {
-                                    case "???":
-                                        headers.Add(MessageHeaders.MessageId, msg.Header[key]);
-                                        break;
-                                }
-                            }
-                            */
                         }
                         
                         Stream data = new MemoryStream(msg.Data);
