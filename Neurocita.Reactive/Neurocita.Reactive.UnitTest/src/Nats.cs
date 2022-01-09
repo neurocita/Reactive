@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NATS.Client;
 using NATS.Client.Rx;
+using Neurocita.Reactive;
+using Neurocita.Reactive.Configuration;
 using Neurocita.Reactive.Pipeline;
 using Neurocita.Reactive.Serialization;
 using Neurocita.Reactive.Transport;
@@ -27,7 +29,7 @@ namespace Neurocita.Reactive.UnitTest
         }
 
         [TestMethod]
-        public void SimpleConnect()
+        public void TestSimpleConnect()
         {
             var connectionFactory = new ConnectionFactory();
             using (var connection = connectionFactory.CreateConnection(url))
@@ -63,7 +65,7 @@ namespace Neurocita.Reactive.UnitTest
         }
 
         [TestMethod]
-        public void RxConnect()
+        public void TestRxConnect()
         {
             var connectionFactory = new NATS.Client.ConnectionFactory();
             using (var connection = connectionFactory.CreateConnection(url))
@@ -97,7 +99,7 @@ namespace Neurocita.Reactive.UnitTest
         }
 
         [TestMethod]
-        public void Pipeline()
+        public void TestPipeline()
         {
             ITransport transport = new NatsTransportFactory().Create();
             ISerializer serializer = new DataContractJsonSerializerFactory().Create();
@@ -135,6 +137,50 @@ namespace Neurocita.Reactive.UnitTest
                                         Console.WriteLine("Sequence completed");
                                     else
                                         throw exception.InnerException;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        [TestMethod]
+        public void TestServiceBus()
+        {
+            using (CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+            {
+                using (IServiceBus serviceBus = ServiceBus
+                    .Configure()
+                        .TransportWithNats()
+                        .SerializeWithBinary()
+                        .WithEndpoint("test", "test")
+                    .Create())
+                {
+                    using (var source = serviceBus.Endpoints["test"].AsSource())
+                    {
+                        using (source
+                            .AsObservable<ValueTypeDataContract<int>>()
+                            .Subscribe(
+                                value => Console.WriteLine(value.Value),
+                                exception => throw exception,
+                                () => cancellationTokenSource.Cancel()))
+                        {
+                            using (var sink = serviceBus.Endpoints["test"].AsSink())
+                            {
+                                using (sink.From(Observable.Range(1, 20).ToDataContract()))
+                                {
+                                    try
+                                    {
+                                        Task.Delay(TimeSpan.FromSeconds(20), cancellationTokenSource.Token).Wait();
+                                    }
+                                    catch (AggregateException exception)
+                                    {
+                                        if (exception.InnerException is TaskCanceledException)
+                                            Console.WriteLine("Sequence completed");
+                                        else
+                                            throw exception.InnerException;
+                                    }
                                 }
                             }
                         }

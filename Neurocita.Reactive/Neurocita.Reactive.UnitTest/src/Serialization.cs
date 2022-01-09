@@ -10,7 +10,7 @@ namespace Neurocita.Reactive.UnitTest
     public class Serialization
     {
         [TestMethod]
-        public void DataContractJson()
+        public void TestDataContractJson()
         {
             ISerializer serializer = new DataContractJsonSerializerFactory().Create();
             IValueTypeDataContract<int> value = new ValueTypeDataContract<int>(12);
@@ -23,7 +23,7 @@ namespace Neurocita.Reactive.UnitTest
         }
 
         [TestMethod]
-        public void DataContractXml()
+        public void TestDataContractXml()
         {
             ISerializer serializer = new DataContractXmlSerializerFactory().Create();
             IValueTypeDataContract<int> value = new ValueTypeDataContract<int>(23);
@@ -36,7 +36,7 @@ namespace Neurocita.Reactive.UnitTest
         }
 
         [TestMethod]
-        public void Xml()
+        public void TestXml()
         {
             ISerializer serializer = new XmlSerializerFactory().Create();
             IValueTypeDataContract<int> value = new ValueTypeDataContract<int>(32);
@@ -49,7 +49,7 @@ namespace Neurocita.Reactive.UnitTest
         }
 
         [TestMethod]
-        public void Binary()
+        public void TestBinary()
         {
             ISerializer serializer = new BinarySerializerFactory().Create();
             IValueTypeDataContract<int> value = new ValueTypeDataContract<int>(167);

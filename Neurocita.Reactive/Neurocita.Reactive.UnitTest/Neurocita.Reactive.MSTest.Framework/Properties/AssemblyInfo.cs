@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Reply AG")]
 [assembly: AssemblyProduct("Neurocita.Reactive.MSTest.Framework")]
-[assembly: AssemblyCopyright("Copyright © Reply AG 2022")]
+[assembly: AssemblyCopyright("Copyright © Neurocita 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

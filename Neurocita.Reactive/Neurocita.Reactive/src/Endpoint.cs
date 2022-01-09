@@ -13,7 +13,7 @@ namespace Neurocita.Reactive
 
         public Endpoint(ITransport transport, ISerializer serializer, string nodePath)
         {
-            Util.CheckNullArgument(this.transport);
+            Util.CheckNullArgument(transport);
             Util.CheckNullArgument(serializer);
             Util.CheckNullArgument(nodePath);
 
