@@ -14,8 +14,8 @@ services:
         hard: 6592
     deploy:
       restart_policy:
-        condition: on-failure
-        max_attempts: 1
+        condition: "no"     #always,on-failure,unless-stopped
+        #max_attempts: 1
     ports:
     #Port Mappings:  With the exception of SMF, ports are mapped straight
     #through from host to container.  This may result in port collisions on

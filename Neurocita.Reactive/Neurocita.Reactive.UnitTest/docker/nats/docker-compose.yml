@@ -7,7 +7,7 @@ services:
     image: nats:latest
     #deploy:
     #  restart_policy:
-    #    condition: none
+    #    condition: "no"
     #    max_attempts: 1
     ports:
       #Messaging
