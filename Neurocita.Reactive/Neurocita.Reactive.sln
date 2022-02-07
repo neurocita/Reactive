@@ -31,6 +31,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neurocita.Reactive.MSTest.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.MSTest.Framework", "Neurocita.Reactive.UnitTest\Neurocita.Reactive.MSTest.Framework\Neurocita.Reactive.MSTest.Framework.csproj", "{BA9CF172-595F-47CC-9BBC-BC78BDE401E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.NLog", "Neurocita.Reactive.NLog\Neurocita.Reactive.NLog.csproj", "{C85D336B-D313-4EDC-8F3F-20F32EB8E11A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.Serilog", "Neurocita.Reactive.Serilog\Neurocita.Reactive.Serilog.csproj", "{C4EA80FA-6331-4AA5-9ED2-FB9EB2316048}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.Log4Net", "Neurocita.Reactive.Log4Net\Neurocita.Reactive.Log4Net.csproj", "{F7502652-F8E2-4FFD-B0E7-9D3C781D6C5F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +99,18 @@ Global
 		{BA9CF172-595F-47CC-9BBC-BC78BDE401E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA9CF172-595F-47CC-9BBC-BC78BDE401E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA9CF172-595F-47CC-9BBC-BC78BDE401E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C85D336B-D313-4EDC-8F3F-20F32EB8E11A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C85D336B-D313-4EDC-8F3F-20F32EB8E11A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C85D336B-D313-4EDC-8F3F-20F32EB8E11A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C85D336B-D313-4EDC-8F3F-20F32EB8E11A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4EA80FA-6331-4AA5-9ED2-FB9EB2316048}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4EA80FA-6331-4AA5-9ED2-FB9EB2316048}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4EA80FA-6331-4AA5-9ED2-FB9EB2316048}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4EA80FA-6331-4AA5-9ED2-FB9EB2316048}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7502652-F8E2-4FFD-B0E7-9D3C781D6C5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7502652-F8E2-4FFD-B0E7-9D3C781D6C5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7502652-F8E2-4FFD-B0E7-9D3C781D6C5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7502652-F8E2-4FFD-B0E7-9D3C781D6C5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
