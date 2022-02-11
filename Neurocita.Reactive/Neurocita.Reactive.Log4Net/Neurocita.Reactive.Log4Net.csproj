@@ -8,4 +8,10 @@
     <PackageReference Include="log4net" Version="2.0.14" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="log4net.ObservableAppender">
+      <Version>1.0.2</Version>
+    </PackageReference>
+  </ItemGroup>
+
 </Project>
