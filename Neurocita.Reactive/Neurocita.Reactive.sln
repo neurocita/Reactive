@@ -31,11 +31,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neurocita.Reactive.MSTest.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.MSTest.Framework", "Neurocita.Reactive.UnitTest\Neurocita.Reactive.MSTest.Framework\Neurocita.Reactive.MSTest.Framework.csproj", "{BA9CF172-595F-47CC-9BBC-BC78BDE401E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.NLog", "Neurocita.Reactive.NLog\Neurocita.Reactive.NLog.csproj", "{C85D336B-D313-4EDC-8F3F-20F32EB8E11A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neurocita.Reactive.NLog", "Neurocita.Reactive.NLog\Neurocita.Reactive.NLog.csproj", "{C85D336B-D313-4EDC-8F3F-20F32EB8E11A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.Serilog", "Neurocita.Reactive.Serilog\Neurocita.Reactive.Serilog.csproj", "{C4EA80FA-6331-4AA5-9ED2-FB9EB2316048}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neurocita.Reactive.Serilog", "Neurocita.Reactive.Serilog\Neurocita.Reactive.Serilog.csproj", "{C4EA80FA-6331-4AA5-9ED2-FB9EB2316048}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.Log4Net", "Neurocita.Reactive.Log4Net\Neurocita.Reactive.Log4Net.csproj", "{F7502652-F8E2-4FFD-B0E7-9D3C781D6C5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neurocita.Reactive.Log4Net", "Neurocita.Reactive.Log4Net\Neurocita.Reactive.Log4Net.csproj", "{F7502652-F8E2-4FFD-B0E7-9D3C781D6C5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.SshNet", "Neurocita.Reactive.SshNet\Neurocita.Reactive.SshNet.csproj", "{42D770FD-90CE-4CB3-8973-B1903AD83E1D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -111,6 +113,10 @@ Global
 		{F7502652-F8E2-4FFD-B0E7-9D3C781D6C5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7502652-F8E2-4FFD-B0E7-9D3C781D6C5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7502652-F8E2-4FFD-B0E7-9D3C781D6C5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42D770FD-90CE-4CB3-8973-B1903AD83E1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42D770FD-90CE-4CB3-8973-B1903AD83E1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42D770FD-90CE-4CB3-8973-B1903AD83E1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42D770FD-90CE-4CB3-8973-B1903AD83E1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

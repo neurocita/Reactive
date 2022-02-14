@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="FluentFTP" Version="37.0.0" />
+		<PackageReference Include="FluentFTP" Version="37.0.1" />
 	</ItemGroup>
 </Project>
