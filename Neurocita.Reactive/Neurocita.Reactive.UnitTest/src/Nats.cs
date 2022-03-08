@@ -32,9 +32,9 @@ namespace Neurocita.Reactive.UnitTest
         public void TestSimpleConnect()
         {
             var connectionFactory = new ConnectionFactory();
-            using (var connection = connectionFactory.CreateConnection(url))
+            using (IConnection connection = connectionFactory.CreateConnection(url))
             {
-                using (var subscription = connection.SubscribeAsync(node))
+                using (IAsyncSubscription subscription = connection.SubscribeAsync(node))
                 {
                     subscription.MessageHandler += Subscription_MessageHandler;
                     subscription.Start();
@@ -68,13 +68,13 @@ namespace Neurocita.Reactive.UnitTest
         public void TestRxConnect()
         {
             var connectionFactory = new NATS.Client.ConnectionFactory();
-            using (var connection = connectionFactory.CreateConnection(url))
+            using (IConnection connection = connectionFactory.CreateConnection(url))
             {
-                using (var observable = connection.Observe(node))
+                using (INATSObservable<Msg> observable = connection.Observe(node))
                 {
                     using (observable.Subscribe(msg => Console.WriteLine(BitConverter.ToInt32(msg.Data, 0))))
                     {
-                        using (var connection2 = connectionFactory.CreateConnection(url))
+                        using (IConnection connection2 = connectionFactory.CreateConnection(url))
                         {
                             for (int counter = 1; counter <= 10; counter++)
                             {
@@ -152,6 +152,8 @@ namespace Neurocita.Reactive.UnitTest
             {
                 using (IServiceBus serviceBus = ServiceBus
                     .Configure()
+                        //.Over
+                        //.As
                         .TransportWithNats()
                         .SerializeWithBinary()
                         .WithEndpoint("test", "test")
