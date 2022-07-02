@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NATS.Client" Version="0.14.5" />
+    <PackageReference Include="NATS.Client" Version="0.14.8" />
   </ItemGroup>
 
   <ItemGroup>
