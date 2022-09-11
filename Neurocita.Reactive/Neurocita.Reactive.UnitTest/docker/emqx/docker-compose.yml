@@ -1,0 +1,24 @@
+# docker-compose -p emqx-test up
+version: '3.3'
+
+services:
+  primary:
+    container_name: emqx-test
+    image: emqx:latest
+    #deploy:
+    #  restart_policy:
+    #    condition: none
+    #    max_attempts: 1
+    ports:
+      #Messaging
+      - '1883:1883'
+      #Messaging SSL
+      - '8883:8883'
+      #Dashboard (User: admin, password: public)
+      - '18083:18083'
+      #Management
+      - '8081:8081'
+      #WS
+      - '8083:8083'
+      #WSS
+      - '8084:8084'

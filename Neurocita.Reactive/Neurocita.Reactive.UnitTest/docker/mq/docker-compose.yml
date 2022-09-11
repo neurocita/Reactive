@@ -1,0 +1,26 @@
+# docker-compose -p mq-test up
+
+# https://github.com/ibm-messaging/mq-container/blob/master/docs/usage.md
+# https://github.com/ibm-messaging/mq-container/blob/master/docs/developer-config.md
+
+version: '3.3'
+
+services:
+  primary:
+    container_name: mq-test
+    image: icr.io/ibm-messaging/mq:latest
+    #deploy:
+    #  restart_policy:
+    #    condition: none
+    #    max_attempts: 1
+    environment:
+        - LICENSE=accept
+        - MQ_QMGR_NAME=QM1
+        - MQ_ENABLE_METRICS=true
+    ports:
+      #Messaging
+      - '1414:1414'
+      #Web Console (User: admin, Password: passw0rd, Url: http://localhost:10443/ibmmq/console)
+      - '10443:9443'
+      #Prometheus
+      - '9157:9157'
