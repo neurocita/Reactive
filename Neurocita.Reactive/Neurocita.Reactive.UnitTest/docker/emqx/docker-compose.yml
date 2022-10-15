@@ -1,4 +1,5 @@
-# docker-compose -p emqx-test up
+# docker-compose -p emqx-test up -d
+# https://hub.docker.com/r/emqx/emqx
 version: '3.3'
 
 services:

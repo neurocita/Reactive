@@ -1,4 +1,4 @@
-# docker-compose -p nats-test up
+# docker-compose -p nats-test up -d
 version: '3.3'
 
 services:

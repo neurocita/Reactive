@@ -1,5 +1,5 @@
-# docker-compose -f PubSubStandard_singleNode.yml up
-# docker-compose -p solace-test up
+# docker-compose -f PubSubStandard_singleNode.yml up -d
+# docker-compose -p solace-test up -d
 version: '3.3'
 
 services:

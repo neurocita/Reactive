@@ -1,4 +1,4 @@
-# docker-compose -p mq-test up
+# docker-compose -p mq-test up -d
 
 # https://github.com/ibm-messaging/mq-container/blob/master/docs/usage.md
 # https://github.com/ibm-messaging/mq-container/blob/master/docs/developer-config.md

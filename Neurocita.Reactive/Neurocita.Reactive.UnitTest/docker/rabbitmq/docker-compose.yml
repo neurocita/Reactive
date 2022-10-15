@@ -1,4 +1,4 @@
-# docker-compose -p rabbitmq-test up
+# docker-compose -p rabbitmq-test up -d
 version: '3.3'
 
 services:
