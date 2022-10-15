@@ -123,6 +123,51 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\docker\aedes\docker-compose.yml">
+      <Link>docker\aedes\docker-compose.yml</Link>
+    </None>
+    <None Include="..\docker\emqx\docker-compose.yml">
+      <Link>docker\emqx\docker-compose.yml</Link>
+    </None>
+    <None Include="..\docker\hivemq\docker-compose.yml">
+      <Link>docker\hivemq\docker-compose.yml</Link>
+    </None>
+    <None Include="..\docker\mosquitto\docker-compose.yml">
+      <Link>docker\mosquitto\docker-compose.yml</Link>
+    </None>
+    <None Include="..\docker\mq\docker-compose.yml">
+      <Link>docker\mq\docker-compose.yml</Link>
+    </None>
+    <None Include="..\docker\nanomq\docker-compose.yml">
+      <Link>docker\nanomq\docker-compose.yml</Link>
+    </None>
+    <None Include="..\docker\nats\docker-compose.yml">
+      <Link>docker\nats\docker-compose.yml</Link>
+    </None>
+    <None Include="..\docker\nsq\docker-compose.yml">
+      <Link>docker\nsq\docker-compose.yml</Link>
+    </None>
+    <None Include="..\docker\pulsar\docker-compose.yml">
+      <Link>docker\pulsar\docker-compose.yml</Link>
+    </None>
+    <None Include="..\docker\rabbitmq\docker-compose.yml">
+      <Link>docker\rabbitmq\docker-compose.yml</Link>
+    </None>
+    <None Include="..\docker\rabbitmq\enabled_plugins">
+      <Link>docker\rabbitmq\enabled_plugins</Link>
+    </None>
+    <None Include="..\docker\solace\docker-compose.yml">
+      <Link>docker\solace\docker-compose.yml</Link>
+    </None>
+    <None Include="..\docker\swiftmq\docker-compose.sh">
+      <Link>docker\swiftmq\docker-compose.sh</Link>
+    </None>
+    <None Include="..\docker\swiftmq\docker-compose.yml">
+      <Link>docker\swiftmq\docker-compose.yml</Link>
+    </None>
+    <None Include="..\docker\vernemq\docker-compose.yml">
+      <Link>docker\vernemq\docker-compose.yml</Link>
+    </None>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
