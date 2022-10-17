@@ -135,6 +135,9 @@
     <None Include="..\docker\mosquitto\docker-compose.yml">
       <Link>docker\mosquitto\docker-compose.yml</Link>
     </None>
+    <None Include="..\docker\mqlight\docker-compose.yml">
+      <Link>docker\mqlight\docker-compose.yml</Link>
+    </None>
     <None Include="..\docker\mq\docker-compose.yml">
       <Link>docker\mq\docker-compose.yml</Link>
     </None>
