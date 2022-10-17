@@ -3,6 +3,6 @@
 		<TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="MQTTnet" Version="4.0.1.184" />
+		<PackageReference Include="MQTTnet" Version="4.1.1.318" />
 	</ItemGroup>
 </Project>
