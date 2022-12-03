@@ -37,7 +37,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neurocita.Reactive.Serilog"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neurocita.Reactive.Log4Net", "Neurocita.Reactive.Log4Net\Neurocita.Reactive.Log4Net.csproj", "{F7502652-F8E2-4FFD-B0E7-9D3C781D6C5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.SshNet", "Neurocita.Reactive.SshNet\Neurocita.Reactive.SshNet.csproj", "{42D770FD-90CE-4CB3-8973-B1903AD83E1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neurocita.Reactive.SshNet", "Neurocita.Reactive.SshNet\Neurocita.Reactive.SshNet.csproj", "{42D770FD-90CE-4CB3-8973-B1903AD83E1D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.Xmpp", "Neurocita.Reactive.Xmpp\Neurocita.Reactive.Xmpp.csproj", "{5E1CAE0E-BD35-4A1D-8B41-3853B2B9AAAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,6 +119,10 @@ Global
 		{42D770FD-90CE-4CB3-8973-B1903AD83E1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42D770FD-90CE-4CB3-8973-B1903AD83E1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42D770FD-90CE-4CB3-8973-B1903AD83E1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E1CAE0E-BD35-4A1D-8B41-3853B2B9AAAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E1CAE0E-BD35-4A1D-8B41-3853B2B9AAAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E1CAE0E-BD35-4A1D-8B41-3853B2B9AAAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E1CAE0E-BD35-4A1D-8B41-3853B2B9AAAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
