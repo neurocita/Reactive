@@ -46,8 +46,8 @@
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MSTest.TestFramework.2.2.10\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="NATS.Client, Version=1.0.1.0, Culture=neutral, PublicKeyToken=5b58bc7249e111a9, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NATS.Client.1.0.1\lib\net46\NATS.Client.dll</HintPath>
+    <Reference Include="NATS.Client, Version=1.0.2.0, Culture=neutral, PublicKeyToken=5b58bc7249e111a9, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NATS.Client.1.0.2\lib\net46\NATS.Client.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Specialized, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -126,6 +126,9 @@
     <None Include="..\docker\aedes\docker-compose.yml">
       <Link>docker\aedes\docker-compose.yml</Link>
     </None>
+    <None Include="..\docker\ejabberd\docker-compose.yml">
+      <Link>docker\ejabberd\docker-compose.yml</Link>
+    </None>
     <None Include="..\docker\emqx\docker-compose.yml">
       <Link>docker\emqx\docker-compose.yml</Link>
     </None>
@@ -184,6 +187,7 @@
       <Name>Neurocita.Reactive</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
