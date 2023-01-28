@@ -1,0 +1,33 @@
+# docker-compose -p ironmq-test up -d
+# https://dev.iron.io/mq/3/on-premise/installation/single.html
+# https://dev.iron.io/mq/3/reference/api/
+# https://github.com/iron-io/iron_dotnet
+version: '3.3'
+
+services:
+  ironauth-test:
+    container_name: ironauth-test
+    image: iron/auth
+    #deploy:
+    #  restart_policy:
+    #    condition: none
+    #    max_attempts: 1
+    ports:
+      #WebSocket
+      - '8090:8090'
+    network_mode: host
+
+  ironmq-test:
+    container_name: ironmq-test
+    image: iron/mq
+    #deploy:
+    #  restart_policy:
+    #    condition: none
+    #    max_attempts: 1
+    depends_on:
+      - ironauth-test  
+    ports:
+      #WebSocket
+      - '8080:8080'
+    network_mode: host
+    
