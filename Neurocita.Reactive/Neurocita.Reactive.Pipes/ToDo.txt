@@ -1,4 +1,0 @@
-﻿Reference to nuget package Neurocita.Reactive
-Task cancellation:
-https://docs.microsoft.com/en-us/dotnet/standard/parallel-programming/task-cancellation
-Error handling
