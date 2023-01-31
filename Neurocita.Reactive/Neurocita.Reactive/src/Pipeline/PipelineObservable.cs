@@ -6,19 +6,28 @@ namespace Neurocita.Reactive.Pipeline
 {
     public static class PipelineObservable
     {
-        public static IObservable<IMessage<Stream>> Create(ITransportMessageSource transportMessageSource)
+        public static IObservable<IMessage<Stream>> From<TTransport>(TTransport transport, string path)
+            where TTransport : ITransport
         {
-            return transportMessageSource.Messages;
+            return transport.Observe(path);
         }
 
-        public static IObservable<IMessage<Stream>> Create(ITransport transport, string nodePath)
+        public static IObservable<IMessage<Stream>> FromRemote<TTransport>(ITransportFactory<TTransport> transportFactory, string path)
+            where TTransport : ITransport
         {
-            return transport.CreateSource(nodePath).Messages;
+            return transportFactory.Create().Observe(path);
         }
 
-        public static IObservable<IMessage<Stream>> Create(ITransportFactory transportFactory, string nodePath)
+        public static IObservable<IMessage<Stream>> From<TTransport>(Func<TTransport> transportFactory, string path)
+            where TTransport : ITransport
         {
-            return transportFactory.Create().CreateSource(nodePath).Messages;
+            return transportFactory.Invoke().Observe(path);
+        }
+
+        public static IObservable<IMessage<Stream>> FromRemote<TState,TTransport>(Func<TState, TTransport> transportFactory, TState state, string path)
+            where TTransport : ITransport
+        {
+            return transportFactory.Invoke(state).Observe(path);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Neurocita.Reactive.Serialization
             this.settings = settings;
         }
 
-        public string ContentType => "application/json";
+        public string RfcContentType => "application/json";
 
         public Stream Serialize<T>(T instance)
         {

@@ -14,7 +14,7 @@ namespace Neurocita.Reactive.Serialization
             this.settings = settings;
         }
 
-        public string ContentType => "text/xml";
+        public string RfcContentType => "text/xml";
 
         public Stream Serialize<T>(T instance)
         {

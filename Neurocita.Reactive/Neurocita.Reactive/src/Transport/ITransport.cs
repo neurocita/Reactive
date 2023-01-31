@@ -1,9 +1,12 @@
+using System;
+using System.IO;
+
 namespace Neurocita.Reactive.Transport
 {
-    public interface ITransport
+    public interface ITransport : IDisposable
     {
-        ITransportMessageSource CreateSource(string source);
-        ITransportMessageSink CreateSink(string destination);
-        // ToDo: Create source / sink with filters
+        IObservable<IMessage<Stream>> Observe(string path);
+        IDisposable Sink(string path, IObservable<IMessage<Stream>> observable);
+        // ToDo: Observe / sink with filters
     }
 }

@@ -7,11 +7,79 @@ using System.Linq;
 using System.Reactive.Linq;
 using Neurocita.Reactive.Transport;
 using Neurocita.Reactive.Serialization;
+using System.ComponentModel;
 
 namespace Neurocita.Reactive.Pipeline
 {
     public static class ObservableExtensions
     {
+        public static IObservable<IMessage<TResult>> Transform<TResult>(this IObservable<IMessage<Stream>> observable, ISerializer serializer)
+        {
+            return observable
+                .TakeWhile(message => message?.Body != null || message?.Body?.Length > 0)       // Empty body is treated as completed event
+                .Select(message =>
+                {
+                    try
+                    {
+                        TResult result = serializer.Deserialize<TResult>(message.Body);
+                        if (message.Headers.ContainsKey(MessageHeaders.RfcContentType))
+                            message.Headers.Remove(MessageHeaders.RfcContentType);
+                        return new Message<TResult>(result, message.Headers);
+                    }
+                    catch
+                    {
+                        Exception exception = serializer.Deserialize<Exception>(message.Body);  // Try to deserialize the exception content and throw it
+                        throw exception;
+                    }
+                });
+        }
+
+        public static IObservable<IMessage<TResult>> Transform<TResult>(this IObservable<IMessage<Stream>> observable, ISerializerFactory serializerFactory)
+        {
+            return observable.Transform<TResult>(serializerFactory.Create());
+        }
+
+        public static IObservable<IMessage<Stream>> Transform<TInput>(this IObservable<IMessage<TInput>> observable, ISerializer serializer)
+        {
+            return observable
+                .Select(message =>
+                {
+                    IMessage<Stream> transformed = new Message<Stream>(serializer.Serialize(message.Body), message.Headers);
+                    if (!transformed.Headers.ContainsKey(MessageHeaders.RfcContentType))
+                        transformed.Headers[MessageHeaders.RfcContentType] = serializer.RfcContentType;
+                    return transformed;
+                })
+                .Concat(
+                    Observable.Return<IMessage<Stream>>(
+                        new Message<Stream>(null, new Dictionary<string,object>()
+                        {
+                            { MessageHeaders.ContentSourceType, typeof(TInput) },
+                            { MessageHeaders.RfcContentType, serializer.RfcContentType }
+                        })))
+                .Catch<IMessage<Stream>,Exception>(exception =>
+                    Observable.Return<IMessage<Stream>>(
+                        new Message<Stream>(serializer.Serialize(exception), new Dictionary<string, object>()
+                        {
+                            { MessageHeaders.ContentSourceType, exception.GetType() },
+                            { MessageHeaders.RfcContentType, serializer.RfcContentType }
+                        })));
+        }
+
+        public static IObservable<IMessage<Stream>> Transform<TInput>(this IObservable<IMessage<TInput>> observable, ISerializerFactory serializerFactory)
+        {
+            return observable.Transform(serializerFactory.Create());
+        }
+
+        public static IObservable<IMessage<TPayload>> Interscept<TPayload>(this IObservable<IMessage<TPayload>> observable, IPipelineInterceptor<TPayload> interceptor)
+        {
+            return observable.Select(interceptor.Intercept);
+        }
+
+        public static IObservable<IMessage<TPayload>> Intercept<TPayload>(this IObservable<IMessage<TPayload>> observable, Func<IMessage<TPayload>,IMessage<TPayload>> intercept)
+        {
+            return observable.Select(intercept);
+        }
+
         public static IObservable<IPipelineObjectContext<TDataContract>> Deserialize<TDataContract>(this IObservable<IPipelineTransportContext> observable, ISerializer serializer)
             where TDataContract : IDataContract
         {
@@ -50,10 +118,10 @@ namespace Neurocita.Reactive.Pipeline
             var onCompleted = new Lazy<IPipelineTransportContext>(() =>
             {
                 IDictionary<string, object> headers = new Dictionary<string, object>();
-                headers.Add(MessageHeaders.ContentType, serializer.ContentType);
+                headers.Add(MessageHeaders.RfcContentType, serializer.RfcContentType);
                 headers.Add(MessageHeaders.ObservableEvent, "OnCompleted");
 
-                TransportMessage transportMessage = new TransportMessage(null, headers);
+                TransportMessage transportMessage = new TransportMessage(headers);
                 return new PipelineTransportContext(PipelineDirection.Outbound, transportMessage) as IPipelineTransportContext;
             });
 
@@ -61,8 +129,8 @@ namespace Neurocita.Reactive.Pipeline
             .Select(context =>
             {
                 IDictionary<string, object> headers = context.Message.Headers ?? new Dictionary<string, object>();
-                if (!headers.ContainsKey(MessageHeaders.ContentType) && !string.IsNullOrWhiteSpace(serializer.ContentType))
-                    headers.Add(MessageHeaders.ContentType, serializer.ContentType);
+                if (!headers.ContainsKey(MessageHeaders.RfcContentType) && !string.IsNullOrWhiteSpace(serializer.RfcContentType))
+                    headers.Add(MessageHeaders.RfcContentType, serializer.RfcContentType);
                 headers[MessageHeaders.ObservableEvent] = "OnNext";
 
                 Stream stream = serializer.Serialize(context.Message.Body);
@@ -73,8 +141,8 @@ namespace Neurocita.Reactive.Pipeline
             .Catch<IPipelineTransportContext, Exception>(exception =>
             {
                 IDictionary<string, object> headers = new Dictionary<string, object>();
-                if (!headers.ContainsKey(MessageHeaders.ContentType) && !string.IsNullOrWhiteSpace(serializer.ContentType))
-                    headers.Add(MessageHeaders.ContentType, serializer.ContentType);
+                if (!headers.ContainsKey(MessageHeaders.RfcContentType) && !string.IsNullOrWhiteSpace(serializer.RfcContentType))
+                    headers.Add(MessageHeaders.RfcContentType, serializer.RfcContentType);
                 headers[MessageHeaders.ObservableEvent] = "OnError";
                 headers[MessageHeaders.QualifiedTypeName] = exception.GetType().FullName;
                 

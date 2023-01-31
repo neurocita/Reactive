@@ -2,7 +2,8 @@
 
 namespace Neurocita.Reactive.Configuration
 {
-    public interface IEndpointConfiguration : INode
+    public interface IEndpointConfiguration
     {
+        string NodePath { get; }
     }
 }

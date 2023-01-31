@@ -1,29 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using Neurocita.Reactive.Transport;
-using Neurocita.Reactive.Serialization;
+﻿using System.Collections.Generic;
 
 namespace Neurocita.Reactive.Configuration
 {
     public class ServiceBusConfiguration : IServiceBusConfiguration
     {
-        private ITransportFactory transportFactory;
-        private ISerializerFactory serializerFactory;
+        private TransportConfiguration transportConfiguration;
+        private SerializerConfiguration serializationConfiguration;
+        private ILoggingConfiguration loggingConfiguration;
         private readonly IDictionary<string, IEndpointConfiguration> endpointConfigurations = new Dictionary<string, IEndpointConfiguration>();
 
-        public ICanAddSerializer WithTransport(ITransportFactory transportFactory)
+        //public static ITransportConfiguration DefaultTransport = new InMemoryTransportConfiguration();
+        //public static ISerializationConfiguration DefaultSerialization = new BinarySerializerConfiguration();
+        public static ILoggingConfiguration DefaultLogging = new NullLoggerConfiguration();
+
+        public ServiceBusConfiguration()
         {
-            this.transportFactory = transportFactory;
-            return this;
+            //this.Transport = DefaultTransport;
+            //this.Serialization = DefaultSerialization;
+            this.Logging = DefaultLogging;
         }
 
-        public ICanAddEndpoint WithSerializer(ISerializerFactory serializerFactory)
+        public TransportConfiguration Transport
         {
-            this.serializerFactory = serializerFactory;
-            return this;
+            get { return transportConfiguration; }
+            internal set { transportConfiguration = value; }
+        }
+        public SerializerConfiguration Serialization
+        {
+            get { return serializationConfiguration; }
+            internal set { serializationConfiguration = value; }
         }
 
-        public ICanAddEndpointOrCreate WithEndpoint(string name, string nodePath)
+        public ILoggingConfiguration Logging
+        {
+            get { return loggingConfiguration; }
+            internal set { loggingConfiguration = value; }
+        }
+
+        public IDictionary<string, IEndpointConfiguration> Endpoints => endpointConfigurations;
+
+        public IServiceBusConfiguration AddEndpoint(string name, string nodePath)
         {
             this.endpointConfigurations.Add(name, new EndpointConfiguration(nodePath));
             return this;
@@ -31,13 +47,7 @@ namespace Neurocita.Reactive.Configuration
 
         public IServiceBus Create()
         {
-            IDictionary<string, IEndpoint> endpoints = new Dictionary<string, IEndpoint>();
-            foreach (var endpointConfiguration in endpointConfigurations)
-            {
-                Endpoint endpoint = new Endpoint(transportFactory.Create(), serializerFactory.Create(), endpointConfiguration.Value.NodePath);
-                endpoints.Add(endpointConfiguration.Key, endpoint);
-            }
-            return new ServiceBus(endpoints);
+            return new ServiceBus(this);
         }
     }
 }

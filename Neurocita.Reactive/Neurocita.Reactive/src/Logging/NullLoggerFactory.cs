@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Neurocita.Reactive.Configuration;
+using System;
 
 namespace Neurocita.Reactive.Logging
 {
@@ -6,8 +7,17 @@ namespace Neurocita.Reactive.Logging
     {
         public static ILoggerFactory Instance => new NullLoggerFactory();
 
+        public ILoggingConfiguration Configuration { get; }
+
         private NullLoggerFactory()
-        { }
+        {
+            Configuration = new NullLoggerConfiguration();
+        }
+
+        internal NullLoggerFactory(NullLoggerConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
 
         public ILogger CreateLogger()
         {

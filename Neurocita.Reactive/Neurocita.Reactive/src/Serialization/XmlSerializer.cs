@@ -4,7 +4,7 @@ namespace Neurocita.Reactive.Serialization
 {
     public class XmlSerializer : ISerializer
     {
-        public string ContentType => "text/xml";
+        public string RfcContentType => "text/xml";
 
         public Stream Serialize<T>(T instance)
         {

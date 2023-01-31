@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Neurocita.Reactive.Configuration;
 
 namespace Neurocita.Reactive
 {
-    public interface IServiceBus : IDisposable
+    public interface IServiceBus
     {
-        IReadOnlyDictionary<string, IEndpoint> Endpoints { get; }
     }
 }

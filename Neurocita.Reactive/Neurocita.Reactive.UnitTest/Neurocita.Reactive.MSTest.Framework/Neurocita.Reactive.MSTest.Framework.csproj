@@ -175,6 +175,7 @@
       <Link>docker\vernemq\docker-compose.yml</Link>
     </None>
     <None Include="app.config" />
+    <None Include="docker\kafka\docker-compose.yml" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

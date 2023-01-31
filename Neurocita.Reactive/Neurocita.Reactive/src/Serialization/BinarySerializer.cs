@@ -8,7 +8,7 @@ namespace Neurocita.Reactive.Serialization
     {
         private readonly IFormatter formatter = new BinaryFormatter();
 
-        public string ContentType => "application/octet-stream";
+        public string RfcContentType => "application/octet-stream";
 
         public Stream Serialize<T>(T instance)
         {

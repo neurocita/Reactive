@@ -1,7 +1,8 @@
 ﻿namespace Neurocita.Reactive.Transport
 {
-    public interface ITransportFactory
+    public interface ITransportFactory<T>
+        where T : ITransport
     {
-        ITransport Create();
+       T Create();
     }
 }
