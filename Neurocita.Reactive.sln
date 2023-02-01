@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A7DEBD71-FE4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive", "src\Neurocita.Reactive\Neurocita.Reactive.csproj", "{988BB921-DF55-4E14-ACA4-1092B1D9F71B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{ACC5496B-E6CE-4491-9225-1C833BFC6F10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neurocita.Reactive.Tests", "tests\Neurocita.Reactive.Tests\Neurocita.Reactive.Tests.csproj", "{6C70CBC1-C864-4C0A-BF7E-E14ED8BBD9DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,8 +24,13 @@ Global
 		{988BB921-DF55-4E14-ACA4-1092B1D9F71B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{988BB921-DF55-4E14-ACA4-1092B1D9F71B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{988BB921-DF55-4E14-ACA4-1092B1D9F71B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C70CBC1-C864-4C0A-BF7E-E14ED8BBD9DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C70CBC1-C864-4C0A-BF7E-E14ED8BBD9DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C70CBC1-C864-4C0A-BF7E-E14ED8BBD9DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C70CBC1-C864-4C0A-BF7E-E14ED8BBD9DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{988BB921-DF55-4E14-ACA4-1092B1D9F71B} = {A7DEBD71-FE4C-4CB1-8264-A539782E4934}
+		{6C70CBC1-C864-4C0A-BF7E-E14ED8BBD9DD} = {ACC5496B-E6CE-4491-9225-1C833BFC6F10}
 	EndGlobalSection
 EndGlobal
