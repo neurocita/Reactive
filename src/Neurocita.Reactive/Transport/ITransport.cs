@@ -6,8 +6,10 @@ namespace Neurocita.Reactive.Transport
 {
     public interface ITransport : IDisposable
     {
-        IObservable<IMessage<Stream>> Observe(string path);
-        IDisposable Sink(string path, IObservable<IMessage<Stream>> observable);
+        IObservable<T> Observe<T>(string path)
+            where T : ITransportMessage;
+        IDisposable Sink<T>(IObservable<T> observable, string path)
+            where T : ITransportMessage;
         // ToDo: Observe / sink with filters
     }
 }

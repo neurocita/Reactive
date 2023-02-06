@@ -16,6 +16,12 @@ namespace Neurocita.Reactive.Pipeline
                 Headers[MessageHeaders.CreationTime] = DateTimeOffset.UtcNow;
         }
 
+        public Message(Message<T> message)
+        {
+            Body = message.Body;
+            Headers = message.Headers;
+        }
+
         public IDictionary<string, object> Headers { get; private set; }
         public T Body { get; private set; }
     }

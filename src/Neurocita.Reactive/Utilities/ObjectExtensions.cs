@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Neurocita.Reactive.Pipeline
+namespace Neurocita.Reactive.Utilities
 {
     public static class ObjectExtension
     {
