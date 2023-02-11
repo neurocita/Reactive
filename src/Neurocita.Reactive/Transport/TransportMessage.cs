@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Neurocita.Reactive.Utilities;
 
 namespace Neurocita.Reactive.Transport
 {
     internal class TransportMessage : ITransportMessage
     {
-        private bool disposedValue;
+        private bool _disposed;
 
         public TransportMessage()
         {
@@ -35,14 +34,14 @@ namespace Neurocita.Reactive.Transport
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposed)
             {
                 if (disposing)
                 {
                     Body?.Dispose();
                 }
 
-                 disposedValue = true;
+                 _disposed = true;
             }
         }
 
