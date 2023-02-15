@@ -5,7 +5,7 @@ using System.Runtime.Serialization.Json;
 
 namespace Neurocita.Reactive.Serialization
 {
-    public class DataContractJsonSerializer : ISerializer
+    internal class DataContractJsonSerializer : ISerializer
     {
         private readonly DataContractJsonSerializerSettings _settings;
 

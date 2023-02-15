@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 
 namespace Neurocita.Reactive.Serialization
 {
-    public class DataContractXmlSerializer : ISerializer
+    internal class DataContractXmlSerializer : ISerializer
     {
         private readonly DataContractSerializerSettings _settings;
 
@@ -27,7 +27,7 @@ namespace Neurocita.Reactive.Serialization
             (_settings.KnownTypes as ISet<Type>).Add(type);
 
             stream.Position = 0;
-            DataContractSerializer serializer = new DataContractSerializer(type, _settings);
+            System.Runtime.Serialization.DataContractSerializer serializer = new System.Runtime.Serialization.DataContractSerializer(type, _settings);
             return (T)serializer.ReadObject(stream);
         }
 
@@ -36,7 +36,7 @@ namespace Neurocita.Reactive.Serialization
             Type type = instance.GetType();
             (_settings.KnownTypes as ISet<Type>).Add(type);
 
-            DataContractSerializer serializer = new DataContractSerializer(type, _settings);
+            System.Runtime.Serialization.DataContractSerializer serializer = new System.Runtime.Serialization.DataContractSerializer(type, _settings);
             MemoryStream stream = new MemoryStream();
             serializer.WriteObject(stream, instance);
             stream.Position = 0;
