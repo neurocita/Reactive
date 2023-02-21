@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System;
@@ -97,7 +96,7 @@ namespace Neurocita.Reactive
             return observable.Serialize<TInput,TSerializer,TransportMessage>(serializerFactory.Invoke(state), (body,headers) => new TransportMessage(body, headers));
         }
 
-        public static IObservable<IMessage<TResult>> Deserialize<TResult,TMessage,TSerializer>(this IObservable<TMessage> observable, TSerializer serializer)
+        public static IObservable<IMessage<T>> Deserialize<T,TMessage,TSerializer>(this IObservable<TMessage> observable, TSerializer serializer)
             where TMessage : ITransportMessage
             where TSerializer : ISerializer
         {
@@ -107,10 +106,10 @@ namespace Neurocita.Reactive
                 {
                     try
                     {
-                        TResult result = serializer.Deserialize<TResult>(message.Body);
+                        T result = serializer.Deserialize<T>(message.Body);
                         if (message.Headers.ContainsKey(MessageHeaders.ContentType))
                             message.Headers.Remove(MessageHeaders.ContentType);
-                        return new Message<TResult>(result, message.Headers);
+                        return new Message<T>(result, message.Headers);
                     }
                     catch
                     {
@@ -120,18 +119,39 @@ namespace Neurocita.Reactive
                 });
         }
 
-        public static IObservable<IMessage<TResult>> Deserialize<TResult,TMessage,TSerializer>(this IObservable<TMessage> observable, Func<TSerializer> serializerFactory)
+        public static IObservable<IMessage<T>> Deserialize<T,TMessage,TSerializer>(this IObservable<TMessage> observable, Func<TSerializer> serializerFactory)
             where TMessage : ITransportMessage
             where TSerializer : ISerializer
         {
-            return observable.Deserialize<TResult,TMessage,TSerializer>(serializerFactory.Invoke());
+            return observable.Deserialize<T,TMessage,TSerializer>(serializerFactory.Invoke());
         }
 
-        public static IObservable<IMessage<TResult>> Deserialize<TResult,TMessage,TState,TSerializer>(this IObservable<TMessage> observable, Func<TState,TSerializer> serializerFactory, TState state)
+        public static IObservable<IMessage<T>> Deserialize<T,TMessage,TState,TSerializer>(this IObservable<TMessage> observable, Func<TState,TSerializer> serializerFactory, TState state)
             where TMessage : ITransportMessage
             where TSerializer : ISerializer
         {
-            return observable.Deserialize<TResult,TMessage,TSerializer>(serializerFactory.Invoke(state));
+            return observable.Deserialize<T,TMessage,TSerializer>(serializerFactory.Invoke(state));
+        }
+
+        public static IObservable<IMessage<T>> ToMessage<T>(this IObservable<T> observable, IDictionary<string,object> headers)
+        {
+            return observable.Select(t => new Message<T>(t, headers));
+        }
+
+        public static IObservable<IMessage<T>> ToMessage<T>(this IObservable<T> observable, Func<IDictionary<string,object>> headerFactory)
+        {
+            return observable.Select(t => new Message<T>(t, headerFactory.Invoke()));
+        }
+
+        public static IObservable<IMessage<T>> ToMessage<T, TState>(this IObservable<T> observable, Func<TState,IDictionary<string,object>> headerFactory, TState state)
+        {
+            return observable.Select(t => new Message<T>(t, headerFactory.Invoke(state)));
+        }
+
+        public static IObservable<T> FromMessage<T,TMessage>(this IObservable<TMessage> observable)
+            where TMessage : IMessage<T>
+        {
+            return observable.Select(message => message.Body);
         }
     }
 }
