@@ -153,5 +153,15 @@ namespace Neurocita.Reactive
         {
             return observable.Select(message => message.Body);
         }
+
+        public static IObservable<TMessage> Intercept<TMessage>(this IObservable<TMessage> observable, Func<TMessage,TMessage> interceptor)
+        {
+            return observable.Select<TMessage,TMessage>(interceptor);
+        }  
+
+        public static IObservable<TMessage> Intercept<TMessage,TState>(this IObservable<TMessage> observable, Func<TMessage,TState,TMessage> interceptor, TState state)
+        {
+            return observable.Select<TMessage,TMessage>(message => interceptor.Invoke(message, state));
+        }  
     }
 }
