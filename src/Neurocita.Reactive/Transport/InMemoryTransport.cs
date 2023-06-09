@@ -22,8 +22,10 @@ namespace Neurocita.Reactive.Transport
         public static InMemoryTransport P2P() => new InMemoryTransport(new InMemoryP2PTransport());
         public static InMemoryTransport PubSub() => new InMemoryTransport(new InMemoryPubSubTransport());
 
-        public IObservable<T> Observe<T>(string nodePath) where T : ITransportMessage => _innerTransport.Observe<T>(nodePath);
-        public IDisposable Sink<T>(IObservable<T> observable, string nodePath) where T : ITransportMessage => _innerTransport.Sink(observable, nodePath);
-        public void Dispose() => _innerTransport.Dispose();
+        public IObservable<ITransportMessage> Observe(string nodePath) => _innerTransport.Observe(nodePath);
+        public IDisposable Sink(IObservable<ITransportMessage> observable, string nodePath)
+            => _innerTransport.Sink(observable, nodePath);
+        public void Dispose()
+            => _innerTransport.Dispose();
     }
 }

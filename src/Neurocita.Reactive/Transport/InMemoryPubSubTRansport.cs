@@ -11,18 +11,16 @@ namespace Neurocita.Reactive.Transport
         private readonly ConcurrentDictionary<string, ISubject<ITransportMessage>> _topics = new ConcurrentDictionary<string, ISubject<ITransportMessage>>();
         private CompositeDisposable disposable = new CompositeDisposable();
 
-        public IObservable<T> Observe<T>(string nodePath)
-            where T : ITransportMessage
-        {
+        public IObservable<ITransportMessage> Observe(string nodePath)
+         {
             if (disposable.IsDisposed)
-                return Observable.Empty<T>();
+                return Observable.Empty<ITransportMessage>();
 
             ISubject<ITransportMessage> topic = _topics.GetOrAdd(nodePath, new Subject<ITransportMessage>());
-            return topic.Select(message => (T)message).AsObservable();
+            return topic.Select(message => (ITransportMessage)message).AsObservable();
         }
 
-        public IDisposable Sink<T>(IObservable<T> observable, string nodePath)
-            where T : ITransportMessage
+        public IDisposable Sink(IObservable<ITransportMessage> observable, string nodePath)
         {
             if (disposable.IsDisposed)
                 return Disposable.Empty;

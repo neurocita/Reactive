@@ -5,25 +5,19 @@ namespace Neurocita.Reactive
 {
     public static class RemoteObservable
     {
-        public static IObservable<TMessage> From<TMessage,TTransport>(TTransport transport, string nodePath)
-            where TMessage : ITransportMessage
-            where TTransport : ITransport
+        public static IObservable<ITransportMessage> From(ITransport transport, string nodePath)
         {
-            return transport.Observe<TMessage>(nodePath);
+            return transport.Observe(nodePath);
         }
 
-        public static IObservable<TMessage> From<TMessage,TTransport>(Func<TTransport> transportFactory, string nodePath)
-            where TMessage : ITransportMessage
-            where TTransport : ITransport
+        public static IObservable<ITransportMessage> From(Func<ITransport> transportFactory, string nodePath)
         {
-            return transportFactory.Invoke().Observe<TMessage>(nodePath);
+            return transportFactory.Invoke().Observe(nodePath);
         }
 
-        public static IObservable<TMessage> From<TState,TMessage,TTransport>(Func<TState,TTransport> transportFactory, TState state, string nodePath)
-            where TMessage : ITransportMessage
-            where TTransport : ITransport
+        public static IObservable<ITransportMessage> From<TState>(Func<TState,ITransport> transportFactory, TState state, string nodePath)
         {
-            return transportFactory.Invoke(state).Observe<TMessage>(nodePath);
+            return transportFactory.Invoke(state).Observe(nodePath);
         }
     }
 }

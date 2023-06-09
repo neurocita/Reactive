@@ -10,31 +10,43 @@ namespace Neurocita.Reactive.Pipeline
     {
         private CompositeDisposable disposables = new CompositeDisposable();
 
+        public Pipeline(ITransport transport, ISerializer serializer)
+        {
+            Transport = transport;
+            Serializer = serializer;
+        }
+
         public ITransport Transport { get; }
         public ISerializer Serializer { get; }
 
         public void Dispose()
         {
             disposables.Dispose();
-            Transport.Dispose();
+            Transport.Dispose();            // Ensure transport disposal at latest
         }
 
-        public IDisposable Execute<T>(string nodePath, IObservable<T> source)
+        public IDisposable Execute<TValue,TState>(string nodePath, IObservable<TValue> source, Func<TState,IDictionary<string,object>> headerFactory, TState state)
         {
             IDisposable disposable = source
-                                        .ToMessage<T>((IDictionary<string,object>) null)
-                                        .Serialize<T,ISerializer>(Serializer)
-                                        .To(Transport, nodePath);
+                                        .Wrap(headerFactory.Invoke(state))
+                                        .Pack(Serializer)
+                                        .SendTo(Transport, nodePath);
             disposables.Add(disposable);
             return disposable;
         }
 
-        public IObservable<T> Execute<T>(string nodePath)
+        public IDisposable Execute<TValue>(string nodePath, IObservable<TValue> source, Func<IDictionary<string,object>> headerFactory)
+            => Execute<TValue,object>(nodePath, source, (state) => headerFactory.Invoke(), null);
+
+        public IDisposable Execute<TValue>(string nodePath, IObservable<TValue> source)
+            => Execute<TValue,object>(nodePath, source, (state) => null, null);
+
+        public IObservable<TValue> Execute<TValue>(string nodePath)
         {
             return Transport
-                    .Observe<ITransportMessage>(nodePath)
-                    .Deserialize<T,ITransportMessage,ISerializer>(Serializer)
-                    .FromMessage<T,IMessage<T>>();
+                    .Observe(nodePath)
+                    .Unpack<TValue>(Serializer)
+                    .Unwrap();
         }
     }
 }

@@ -11,18 +11,17 @@ namespace Neurocita.Reactive.Transport
         private readonly ConcurrentDictionary<string, ConcurrentQueue<ITransportMessage>> _queues = new ConcurrentDictionary<string, ConcurrentQueue<ITransportMessage>>();
         private BooleanDisposable disposable = new BooleanDisposable();
 
-        public IObservable<T> Observe<T>(string nodePath)
-            where T : ITransportMessage
+        public IObservable<ITransportMessage> Observe(string nodePath)
         {
             if (disposable.IsDisposed)
-                return Observable.Empty<T>();
+                return Observable.Empty<ITransportMessage>();
 
             ConcurrentQueue<ITransportMessage> queue = _queues.GetOrAdd(nodePath, new ConcurrentQueue<ITransportMessage>());
-            T message = default(T);
+            ITransportMessage message = default(ITransportMessage);
             ITransportMessage messageReference = message;
             
             return Observable
-                    .Generate<int,T>(500
+                    .Generate<int,ITransportMessage>(500
                                     , state => !disposable.IsDisposed
                                     , state => state
                                     , state =>
@@ -33,8 +32,7 @@ namespace Neurocita.Reactive.Transport
                                     });
         }
 
-        public IDisposable Sink<T>(IObservable<T> observable, string nodePath)
-            where T : ITransportMessage
+        public IDisposable Sink(IObservable<ITransportMessage> observable, string nodePath)
         {
             if (disposable.IsDisposed)
                 return Disposable.Empty;
