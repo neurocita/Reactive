@@ -3,7 +3,7 @@ using Neurocita.Reactive.Transport;
 
 namespace Neurocita.Reactive
 {
-    public static class RemoteObservable
+    public static partial class RemoteObservable
     {
         public static IObservable<ITransportMessage> From(ITransport transport, string nodePath)
         {

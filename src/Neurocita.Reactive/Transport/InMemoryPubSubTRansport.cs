@@ -9,11 +9,11 @@ namespace Neurocita.Reactive.Transport
     internal class InMemoryPubSubTransport : ITransport
     {
         private readonly ConcurrentDictionary<string, ISubject<ITransportMessage>> _topics = new ConcurrentDictionary<string, ISubject<ITransportMessage>>();
-        private CompositeDisposable disposable = new CompositeDisposable();
+        private CompositeDisposable disposables = new CompositeDisposable();
 
         public IObservable<ITransportMessage> Observe(string nodePath)
          {
-            if (disposable.IsDisposed)
+            if (disposables.IsDisposed)
                 return Observable.Empty<ITransportMessage>();
 
             ISubject<ITransportMessage> topic = _topics.GetOrAdd(nodePath, new Subject<ITransportMessage>());
@@ -22,16 +22,16 @@ namespace Neurocita.Reactive.Transport
 
         public IDisposable Sink(IObservable<ITransportMessage> observable, string nodePath)
         {
-            if (disposable.IsDisposed)
+            if (disposables.IsDisposed)
                 return Disposable.Empty;
 
             ISubject<ITransportMessage> topic = _topics.GetOrAdd(nodePath, new Subject<ITransportMessage>());
             IDisposable innerDisposable = observable.Subscribe(message => topic.OnNext(message));
-            disposable.Add(innerDisposable);
+            disposables.Add(innerDisposable);
             return innerDisposable;
         }
         
-        public void Dispose() => disposable.Dispose();
+        public void Dispose() => disposables.Dispose();
     }
 
 }

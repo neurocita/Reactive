@@ -1,7 +1,6 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System;
 using System.Reactive.Linq;
 using Neurocita.Reactive.Pipeline;
 using Neurocita.Reactive.Serialization;
@@ -9,10 +8,7 @@ using Neurocita.Reactive.Transport;
 
 namespace Neurocita.Reactive
 {
-    public delegate ITransportMessage TransportMessageFactory<TMessage>(Stream body, IDictionary<string,object> headers)
-        where TMessage : ITransportMessage;
-
-    public static class ObservableExtensions
+    public static partial class ObservableExtensions
     {
         public static IDisposable SendTo(this IObservable<ITransportMessage> transportMessages, ITransport transport, string nodePath)
             => transport.Sink(transportMessages, nodePath);
@@ -94,13 +90,13 @@ namespace Neurocita.Reactive
             => observable.Unpack<TOutput>(serializerFactory.Invoke(state));
 
         public static IObservable<IMessage<TInput>> Wrap<TInput>(this IObservable<TInput> observable, IDictionary<string,object> headers)
-            => observable.Select(t => new Message<TInput>(t, headers));
+            => observable.Select(input => new Message<TInput>(input, headers));
 
         public static IObservable<IMessage<TInput>> Wrap<TInput>(this IObservable<TInput> observable, Func<IDictionary<string,object>> headerFactory)
-            => observable.Select(t => new Message<TInput>(t, headerFactory.Invoke()));
+            => observable.Select(input => new Message<TInput>(input, headerFactory.Invoke()));
 
         public static IObservable<IMessage<TInput>> Wrap<TInput, TState>(this IObservable<TInput> observable, Func<TState,IDictionary<string,object>> headerFactory, TState state)
-            => observable.Select(t => new Message<TInput>(t, headerFactory.Invoke(state)));
+            => observable.Select(input => new Message<TInput>(input, headerFactory.Invoke(state)));
 
         public static IObservable<TOutput> Unwrap<TOutput>(this IObservable<IMessage<TOutput>> observable)
             => observable.Select(message => message.Body);
