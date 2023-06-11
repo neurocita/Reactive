@@ -16,8 +16,9 @@ namespace Neurocita.Reactive.Transport
             if (disposables.IsDisposed)
                 return Observable.Empty<ITransportMessage>();
 
-            ISubject<ITransportMessage> topic = _topics.GetOrAdd(nodePath, new Subject<ITransportMessage>());
-            return topic.Select(message => (ITransportMessage)message).AsObservable();
+            return _topics
+                    .GetOrAdd(nodePath, new Subject<ITransportMessage>())
+                    .AsObservable();
         }
 
         public IDisposable Sink(IObservable<ITransportMessage> observable, string nodePath)
@@ -25,6 +26,7 @@ namespace Neurocita.Reactive.Transport
             if (disposables.IsDisposed)
                 return Disposable.Empty;
 
+            
             ISubject<ITransportMessage> topic = _topics.GetOrAdd(nodePath, new Subject<ITransportMessage>());
             IDisposable innerDisposable = observable.Subscribe(message => topic.OnNext(message));
             disposables.Add(innerDisposable);

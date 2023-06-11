@@ -23,6 +23,9 @@ namespace Neurocita.Reactive.Serialization
 
         public string ContentType => _contentType;
 
+        public static DataContractSerializer Json() => new DataContractSerializer(new DataContractJsonSerializerSettings());
+        public static DataContractSerializer Xml() => new DataContractSerializer(new DataContractSerializerSettings());
+
         public T Deserialize<T>(Stream stream)
         {
             stream.Position = 0;

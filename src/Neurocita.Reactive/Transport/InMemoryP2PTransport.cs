@@ -17,8 +17,7 @@ namespace Neurocita.Reactive.Transport
                 return Observable.Empty<ITransportMessage>();
 
             ConcurrentQueue<ITransportMessage> queue = _queues.GetOrAdd(nodePath, new ConcurrentQueue<ITransportMessage>());
-            ITransportMessage message = default(ITransportMessage);
-            ITransportMessage messageReference = message;
+            ITransportMessage message = new TransportMessage();
             
             return Observable
                     .Generate<int,ITransportMessage>(500
@@ -26,7 +25,7 @@ namespace Neurocita.Reactive.Transport
                                     , state => state
                                     , state =>
                                     {
-                                        while (!disposable.IsDisposed && !queue.TryDequeue(out messageReference))
+                                        while (!disposable.IsDisposed && !queue.TryDequeue(out message))
                                             Task.Delay(state);
                                         return message;
                                     });
@@ -36,7 +35,7 @@ namespace Neurocita.Reactive.Transport
         {
             if (disposable.IsDisposed)
                 return Disposable.Empty;
-
+            
             ConcurrentQueue<ITransportMessage> queue = _queues.GetOrAdd(nodePath, new ConcurrentQueue<ITransportMessage>());
             return observable.Subscribe(message => queue.Enqueue(message));
         }
