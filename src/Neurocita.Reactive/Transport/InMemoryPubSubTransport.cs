@@ -12,7 +12,7 @@ namespace Neurocita.Reactive.Transport
         private CompositeDisposable disposables = new CompositeDisposable();
 
         public IObservable<ITransportMessage> Observe(string nodePath)
-         {
+        {
             if (disposables.IsDisposed)
                 return Observable.Empty<ITransportMessage>();
 
@@ -25,7 +25,6 @@ namespace Neurocita.Reactive.Transport
         {
             if (disposables.IsDisposed)
                 return Disposable.Empty;
-
             
             ISubject<ITransportMessage> topic = _topics.GetOrAdd(nodePath, new Subject<ITransportMessage>());
             IDisposable innerDisposable = observable.Subscribe(message => topic.OnNext(message));

@@ -2,64 +2,96 @@ using System.Reactive;
 using System.Reactive.Linq;
 using Neurocita.Reactive.Serialization;
 using Neurocita.Reactive.Transport;
+using Xunit.Abstractions;
 
 namespace Neurocita.Reactive.Tests;
 
+public class TransportSerializerData : TheoryData<InMemoryTransport,DataContractSerializer>
+{
+    public TransportSerializerData()
+    {
+        Add(InMemoryTransport.PubSub(), DataContractSerializer.Json());
+        Add(InMemoryTransport.PubSub(), DataContractSerializer.Xml());
+        Add(InMemoryTransport.P2P(), DataContractSerializer.Json());
+        Add(InMemoryTransport.P2P(), DataContractSerializer.Xml());
+    }
+}
+
 public class PipelineTest
 {
-    const string node = "test";
-    ISerializer serializer = DataContractSerializer.Xml();
+    private readonly ITestOutputHelper _output;
+    private readonly string _node = "test";
+    private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+    private int received = 0, send = 0;
 
-    public PipelineTest()
+    public PipelineTest(ITestOutputHelper output)
     {
-
+        _output = output;
     }
 
-    [Fact]
-    public void LowLevelReceiverWithSenderTest()
+    [Theory]
+    [ClassData(typeof(TransportSerializerData))]
+    public void ReceiverSenderTest(InMemoryTransport transport, DataContractSerializer serializer)
     {
-        using (var transport = InMemoryTransport.PubSub())
+        _output.WriteLine("Function: {0}", nameof(ReceiverSenderTest));
+        _output.WriteLine("Transport: {0}, Serialization: {1}", transport.ExchangePattern, serializer.ContentType);
+        _output.WriteLine("==========================================================================");
+
+        using (transport)
         {
-            using (var receiver = RemoteObservable.From(transport, node)
-                                                .Do((message) => Console.WriteLine(message.Body == null ? "<null>" : new StreamReader(message.Body).ReadToEnd()))
+            using (var receiver = RemoteObservable.From(transport, _node)
+                                                //.Do((message) => _output.WriteLine(message.Body == null ? "<null>" : new StreamReader(message.Body).ReadToEnd()))
                                                 .Unpack<int>(serializer)
                                                 .Unwrap()
-                                                .Subscribe((value) => Assert.InRange(value, 1, 10)))
+                                                .Do(value => received++)
+                                                .Subscribe(value => Assert.InRange(value, 1, 10)
+                                                    	    , exception => _output.WriteLine(exception.Message)
+                                                            , () => cancellationTokenSource.Cancel()))
             {
                 using (var sender = Observable.Range(1, 10)
+                                            .Do(value => send++)
                                             .Wrap(new Dictionary<string,object>())
                                             .Pack(serializer)
-                                            .SendTo(transport, node))
+                                            .SendTo(transport, _node))
                 {
-                    Task.Delay(500);
+                    Task.Delay(1000, cancellationTokenSource.Token);
                 }
-
-                Task.Delay(500);
             }
         }
+
+        _output.WriteLine("Send: {0}, received: {1}", send, received);
     }
 
-    [Fact]
-    public void LowLevelSenderWithReceiverTest()
+    [Theory]
+    [ClassData(typeof(TransportSerializerData))]
+    public void SenderReceiverTest(InMemoryTransport transport, DataContractSerializer serializer)
     {
-        using (var transport = InMemoryTransport.P2P())
+        _output.WriteLine("Function: {0}", nameof(SenderReceiverTest));
+        _output.WriteLine("Transport: {0}, Serialization: {1}", transport.ExchangePattern, serializer.ContentType);
+        _output.WriteLine("==========================================================================");
+
+        using (transport)
         {
             using (var sender = Observable.Range(1, 10)
+                                        .Do(value => send++)
                                         .Wrap(new Dictionary<string,object>())
                                         .Pack(serializer)
-                                        .SendTo(transport, node))
+                                        .SendTo(transport, _node))
             {
-                using (var receiver = RemoteObservable.From(transport, node)
-                                                    .Do((message) => Console.WriteLine(message.Body == null ? "<null>" : new StreamReader(message.Body).ReadToEnd()))
+                using (var receiver = RemoteObservable.From(transport, _node)
+                                                    //.Do((message) => _output.WriteLine(message.Body == null ? "<null>" : new StreamReader(message.Body).ReadToEnd()))
                                                     .Unpack<int>(serializer)
                                                     .Unwrap()
-                                                    .Subscribe((value) => Assert.InRange(value, 1, 10)))
+                                                    .Do(value => received++)
+                                                    .Subscribe(value => Assert.InRange(value, 1, 10)
+                                                        	    , exception => _output.WriteLine(exception.Message)
+                                                                , () => cancellationTokenSource.Cancel()))
                 {
-                    Task.Delay(500);
+                    Task.Delay(1000, cancellationTokenSource.Token);
                 }
-
-                Task.Delay(500);
             }
         }
+
+        _output.WriteLine("Send: {0}, received: {1}", send, received);
     }
 }

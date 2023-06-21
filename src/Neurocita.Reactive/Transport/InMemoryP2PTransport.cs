@@ -3,47 +3,36 @@ using System.Collections.Concurrent;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Neurocita.Reactive.Utilities;
 
 namespace Neurocita.Reactive.Transport
 {
     internal class InMemoryP2PTransport : ITransport
     {
-        private readonly ConcurrentDictionary<string, ConcurrentQueue<ITransportMessage>> _queues = new ConcurrentDictionary<string, ConcurrentQueue<ITransportMessage>>();
-        private BooleanDisposable disposable = new BooleanDisposable();
+        private readonly ConcurrentDictionary<string, PointToPointSubject<ITransportMessage>> _queues = new ConcurrentDictionary<string, PointToPointSubject<ITransportMessage>>();
+        private CompositeDisposable disposables = new CompositeDisposable();
 
         public IObservable<ITransportMessage> Observe(string nodePath)
         {
-            if (disposable.IsDisposed)
+            if (disposables.IsDisposed)
                 return Observable.Empty<ITransportMessage>();
 
-            ConcurrentQueue<ITransportMessage> queue = _queues.GetOrAdd(nodePath, new ConcurrentQueue<ITransportMessage>());
-            ITransportMessage message = new TransportMessage();
-            
-            return Observable
-                    .Generate<int,ITransportMessage>(500
-                                    , state => !disposable.IsDisposed
-                                    , state => state
-                                    , state =>
-                                    {
-                                        while (!disposable.IsDisposed && !queue.TryDequeue(out message))
-                                            Task.Delay(state);
-                                        return message;
-                                    });
+            return _queues
+                    .GetOrAdd(nodePath, new PointToPointSubject<ITransportMessage>())
+                    .AsObservable();
         }
 
         public IDisposable Sink(IObservable<ITransportMessage> observable, string nodePath)
         {
-            if (disposable.IsDisposed)
+            if (disposables.IsDisposed)
                 return Disposable.Empty;
             
-            ConcurrentQueue<ITransportMessage> queue = _queues.GetOrAdd(nodePath, new ConcurrentQueue<ITransportMessage>());
-            return observable.Subscribe(message => queue.Enqueue(message));
+            PointToPointSubject<ITransportMessage> queue = _queues.GetOrAdd(nodePath, new PointToPointSubject<ITransportMessage>());
+            IDisposable innerDisposable = observable.Subscribe(message => queue.OnNext(message));
+            disposables.Add(innerDisposable);
+            return innerDisposable;
         }
 
-        public void Dispose()
-        {
-            disposable.Dispose();
-            _queues.Clear();
-        }
+        public void Dispose() => disposables.Dispose();
     }
 }
