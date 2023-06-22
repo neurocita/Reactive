@@ -1,5 +1,6 @@
-using System.IO;
 using System;
+using System.IO;
+
 using Neurocita.Reactive.Pipeline;
 
 namespace Neurocita.Reactive.Transport

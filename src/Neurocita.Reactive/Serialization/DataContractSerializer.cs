@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
@@ -6,36 +7,57 @@ namespace Neurocita.Reactive.Serialization
 {
     public class DataContractSerializer : ISerializer
     {
-        private readonly IDataContractInnerSerializerFactory _innerSerializerFactory;
-        private readonly string _contentType;
+        public static DataContractSerializer Xml => new DataContractSerializer(DataContractSerializeFormat.Xml);
+        public static DataContractSerializer Json => new DataContractSerializer(DataContractSerializeFormat.Json);
+    
+        private readonly XmlObjectSerializerFactory _serializerFactory;
+
+        public DataContractSerializer(DataContractSerializeFormat format)
+        {
+            _serializerFactory = new XmlObjectSerializerFactory(format);
+            Format = format;
+            switch (format)
+            {
+                case DataContractSerializeFormat.Xml:
+                    ContentType = DataContractContentType.TextXml;
+                    break;
+
+                case DataContractSerializeFormat.Json:
+                    ContentType = DataContractContentType.ApplicationJson;
+                    break;
+                
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(format));
+            }
+        }
 
         public DataContractSerializer(DataContractSerializerSettings settings)
         {
-            _innerSerializerFactory = new DataContractInnerXmlSerializerFactory(settings);
-            _contentType = "text/xml";
+            _serializerFactory = new XmlObjectSerializerFactory(settings);
+            ContentType = DataContractContentType.TextXml;
+            Format = DataContractSerializeFormat.Xml;
         }
 
         public DataContractSerializer(DataContractJsonSerializerSettings settings)
         {
-            _innerSerializerFactory = new DataContractInnerJsonSerializerFactory(settings);
-            _contentType = "application/json";
+            _serializerFactory = new XmlObjectSerializerFactory(settings);
+            ContentType = DataContractContentType.ApplicationJson;
+            Format = DataContractSerializeFormat.Json;
         }
 
-        public string ContentType => _contentType;
-
-        public static DataContractSerializer Json() => new DataContractSerializer(new DataContractJsonSerializerSettings());
-        public static DataContractSerializer Xml() => new DataContractSerializer(new DataContractSerializerSettings());
+        public string ContentType { get; }
+        public DataContractSerializeFormat Format { get; }
 
         public T Deserialize<T>(Stream stream)
         {
             stream.Position = 0;
-            XmlObjectSerializer serializer = _innerSerializerFactory.Create(typeof(T));
+            XmlObjectSerializer serializer = _serializerFactory.Create(typeof(T));
             return (T)serializer.ReadObject(stream);
         }
 
         public Stream Serialize<T>(T instance)
         {
-            XmlObjectSerializer serializer = _innerSerializerFactory.Create(typeof(T));
+            XmlObjectSerializer serializer = _serializerFactory.Create(typeof(T));
             MemoryStream stream = new MemoryStream();
             serializer.WriteObject(stream, instance);
             stream.Position = 0;

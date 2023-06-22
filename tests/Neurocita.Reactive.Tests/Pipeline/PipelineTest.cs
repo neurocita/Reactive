@@ -10,10 +10,10 @@ public class TransportSerializerData : TheoryData<InMemoryTransport,DataContract
 {
     public TransportSerializerData()
     {
-        Add(InMemoryTransport.PubSub(), DataContractSerializer.Json());
-        Add(InMemoryTransport.PubSub(), DataContractSerializer.Xml());
-        Add(InMemoryTransport.P2P(), DataContractSerializer.Json());
-        Add(InMemoryTransport.P2P(), DataContractSerializer.Xml());
+        Add(InMemoryTransport.PubSub, DataContractSerializer.Json);
+        Add(InMemoryTransport.PubSub, DataContractSerializer.Xml);
+        Add(InMemoryTransport.P2P, DataContractSerializer.Json);
+        Add(InMemoryTransport.P2P, DataContractSerializer.Xml);
     }
 }
 
@@ -34,7 +34,7 @@ public class PipelineTest
     public void ReceiverSenderTest(InMemoryTransport transport, DataContractSerializer serializer)
     {
         _output.WriteLine("Function: {0}", nameof(ReceiverSenderTest));
-        _output.WriteLine("Transport: {0}, Serialization: {1}", transport.ExchangePattern, serializer.ContentType);
+        _output.WriteLine("Transport: {0}, Serialization: {1}", transport.ExchangePattern, serializer.Format);
         _output.WriteLine("==========================================================================");
 
         using (transport)
@@ -67,7 +67,7 @@ public class PipelineTest
     public void SenderReceiverTest(InMemoryTransport transport, DataContractSerializer serializer)
     {
         _output.WriteLine("Function: {0}", nameof(SenderReceiverTest));
-        _output.WriteLine("Transport: {0}, Serialization: {1}", transport.ExchangePattern, serializer.ContentType);
+        _output.WriteLine("Transport: {0}, Serialization: {1}", transport.ExchangePattern, serializer.Format);
         _output.WriteLine("==========================================================================");
 
         using (transport)

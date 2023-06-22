@@ -3,12 +3,16 @@ using System.Collections.Concurrent;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+
 using Neurocita.Reactive.Utilities;
 
 namespace Neurocita.Reactive.Transport
 {
     public class InMemoryTransport : ITransport
     {
+        public static InMemoryTransport P2P => new InMemoryTransport(InMemoryExchangePattern.PointToPoint);
+        public static InMemoryTransport PubSub => new InMemoryTransport(InMemoryExchangePattern.PublishSubscribe);
+
         private readonly ConcurrentDictionary<string, ISubject<ITransportMessage>> _topics = new ConcurrentDictionary<string, ISubject<ITransportMessage>>();
         private CompositeDisposable disposables = new CompositeDisposable();
 
@@ -16,9 +20,6 @@ namespace Neurocita.Reactive.Transport
         {
             ExchangePattern = exchangePattern;
         }
-
-        public static InMemoryTransport P2P() => new InMemoryTransport(InMemoryExchangePattern.PointToPoint);
-        public static InMemoryTransport PubSub() => new InMemoryTransport(InMemoryExchangePattern.PublishSubscribe);
 
         public InMemoryExchangePattern ExchangePattern { get;}
 
