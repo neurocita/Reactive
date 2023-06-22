@@ -11,7 +11,7 @@ namespace Neurocita.Reactive.Utilities
     {
         private readonly CompositeDisposable disposables = new CompositeDisposable();
         private readonly ConcurrentQueue<T> queue = new ConcurrentQueue<T>();
-        private readonly ConcurrentQueue<Tuple<IObserver<T>, ICancelable>> observers = new ConcurrentQueue<Tuple<IObserver<T>, ICancelable>>();
+        private readonly ConcurrentQueue<Tuple<IObserver<T>, ICancelable>> observerDisposables = new ConcurrentQueue<Tuple<IObserver<T>, ICancelable>>();
         private Task consumerWorker = Task.CompletedTask;
 
         public void OnCompleted()
@@ -55,8 +55,15 @@ namespace Neurocita.Reactive.Utilities
                 return disposables as IDisposable;
 
             Tuple<IObserver<T>, ICancelable> observerDisposable = new Tuple<IObserver<T>, ICancelable>(observer, new BooleanDisposable());
-            observers.Enqueue(observerDisposable);
+            observerDisposables.Enqueue(observerDisposable);
             disposables.Add(observerDisposable.Item2);
+
+            lock (consumerWorker)
+            {
+                consumerWorker = consumerWorker
+                                    .ContinueWith(ConsumerWork);
+            }
+
             return observerDisposable.Item2 as IDisposable;
         }
 
@@ -73,9 +80,10 @@ namespace Neurocita.Reactive.Utilities
 
             if (disposing)
             {
+                consumerWorker.Wait();
                 disposables.Dispose();
                 Tuple<IObserver<T>, ICancelable> observer = default(Tuple<IObserver<T>, ICancelable>);
-                while (observers.TryDequeue(out observer));     // Empty observers
+                while (observerDisposables.TryDequeue(out observer));     // Empty observers
             }
         }
 
@@ -84,38 +92,38 @@ namespace Neurocita.Reactive.Utilities
             if (disposables.IsDisposed)
                 return;
 
-            Tuple<IObserver<T>, ICancelable> observer = default(Tuple<IObserver<T>, ICancelable>);
-            while (task.IsCanceled && observers.TryDequeue(out observer))
+            Tuple<IObserver<T>, ICancelable> observerDisposable = default(Tuple<IObserver<T>, ICancelable>);
+            while (task.IsCanceled && observerDisposables.TryDequeue(out observerDisposable))
             {
-                if (observer.Item2.IsDisposed)
+                if (observerDisposable.Item2.IsDisposed)
                     continue;
                 
-                observer.Item1.OnCompleted();
+                observerDisposable.Item1.OnCompleted();
                 break;
             }
 
-            while (task.IsFaulted && observers.TryDequeue(out observer))
+            while (task.IsFaulted && observerDisposables.TryDequeue(out observerDisposable))
             {
-                if (observer.Item2.IsDisposed)
+                if (observerDisposable.Item2.IsDisposed)
                     continue;
                 
-                observer.Item1.OnError(task.Exception);
+                observerDisposable.Item1.OnError(task.Exception);
                 break;
             }
 
             if (!task.IsCanceled && !task.IsFaulted)
             {
                 T value = default(T);
-                while (!observers.IsEmpty && !queue.IsEmpty)
+                while (!observerDisposables.IsEmpty && !queue.IsEmpty)
                 {
-                    if (observers.TryDequeue(out observer))
+                    if (observerDisposables.TryDequeue(out observerDisposable))
                     {
-                        if (observer.Item2.IsDisposed)
+                        if (observerDisposable.Item2.IsDisposed)
                             continue;
                             
-                        observers.Enqueue(observer);
+                        observerDisposables.Enqueue(observerDisposable);
                         if (queue.TryDequeue(out value))
-                            observer.Item1.OnNext(value);
+                            observerDisposable.Item1.OnNext(value);
                     }
                 }
             }

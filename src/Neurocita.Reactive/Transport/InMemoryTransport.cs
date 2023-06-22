@@ -29,7 +29,7 @@ namespace Neurocita.Reactive.Transport
                 return Observable.Empty<ITransportMessage>();
 
             return _topics
-                    .GetOrAdd(nodePath, new Subject<ITransportMessage>())
+                    .GetOrAdd(nodePath, InMemoryTransport.GetSubjectFactory<ITransportMessage>(ExchangePattern).Invoke())
                     .AsObservable();
         }
         public IDisposable Sink(IObservable<ITransportMessage> observable, string nodePath)
