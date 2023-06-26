@@ -1,0 +1,16 @@
+# docker-compose -p mosquitto-test up -d
+version: '3.3'
+
+services:
+  primary:
+    container_name: mosquitto-test
+    image: eclipse-mosquitto:latest
+    #deploy:
+    #  restart_policy:
+    #    condition: none
+    #    max_attempts: 1
+    ports:
+      #Messaging
+      - '1883:1883'
+      #Monitoring?
+      - '9001:9001'

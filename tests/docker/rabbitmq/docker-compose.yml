@@ -1,0 +1,39 @@
+# docker-compose -p rabbitmq-test up -d
+version: '3.3'
+
+services:
+  primary:
+    container_name: rabbitmq-test
+    hostname: rabbitmq-test
+    image: rabbitmq:latest
+    #deploy:
+    #  restart_policy:
+    #    condition: none
+    #    max_attempts: 1
+    ports:
+      #Management
+      - '8080:15672'
+      #Management TLS
+      - '8443:15671'
+      #AMQP
+      - '5672:5672'
+      #AMQP TLS
+      - '5671:5671'
+      #MQTT
+      - '1883:1883'
+      #MQTT TLS
+      - '8883:8883'
+      #MQTT over WebSockets
+      - '5675:15675'
+      #MQTT over WebSockets / TLS
+      - '5676:15676'
+      #STOMP
+      - '1613:61613'
+      #STOMP TLS
+      - '1614:61614'
+      #STOMP over WebSockets
+      - '5674:15674'
+      #STOMP over WebSockets TLS
+      - '5673:15673'
+    volumes:
+      - ./enabled_plugins:/etc/rabbitmq/enabled_plugins

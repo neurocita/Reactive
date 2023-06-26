@@ -1,0 +1,12 @@
+# docker-compose -p pulsar-test up -d
+# https://pulsar.apache.org/docs/en/standalone-docker/
+version: '3.3'
+
+services:
+  pulsar-test:
+    container_name: pulsar-test
+    image: apachepulsar/pulsar
+    command: bin/pulsar standalone
+    ports:
+      - "6650:6650"
+      - "8080:8080"

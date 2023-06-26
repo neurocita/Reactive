@@ -1,0 +1,18 @@
+# docker-compose -p nats-test up -d
+version: '3.3'
+
+services:
+  primary:
+    container_name: nats-test
+    image: nats:latest
+    #deploy:
+    #  restart_policy:
+    #    condition: "no"
+    #    max_attempts: 1
+    ports:
+      #Messaging
+      - '4222:4222'
+      #Cluster routing
+      - '6222:6222'
+      #Monitoring
+      - '8222:8222'

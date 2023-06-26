@@ -1,0 +1,28 @@
+# docker-compose -p nsq-test up -d
+version: '3.3'
+
+services:
+  nsqlookupd-test:
+    container_name: nsqlookupd-test
+    image: nsqio/nsq
+    command: /nsqlookupd
+    ports:
+      - "4160:4160"
+      - "4161:4161"
+  nsqd-test:
+    container_name: nsqd-test
+    image: nsqio/nsq
+    command: /nsqd --lookupd-tcp-address=nsqlookupd-test:4160
+    depends_on:
+      - nsqlookupd-test
+    ports:
+      - "4150:4150"
+      - "4151:4151"
+  nsqadmin-test:
+    container_name: nsqadmin-test
+    image: nsqio/nsq
+    command: /nsqadmin --lookupd-http-address=nsqlookupd-test:4161
+    depends_on:
+      - nsqlookupd-test  
+    ports:
+      - "4171:4171"
