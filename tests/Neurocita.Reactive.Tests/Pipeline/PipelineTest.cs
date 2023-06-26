@@ -1,4 +1,3 @@
-using System.Reactive;
 using System.Reactive.Linq;
 using Neurocita.Reactive.Serialization;
 using Neurocita.Reactive.Transport;
@@ -10,18 +9,19 @@ public class TransportSerializerData : TheoryData<InMemoryTransport,DataContract
 {
     public TransportSerializerData()
     {
-        //Add(InMemoryTransport.PubSub, DataContractSerializer.Json);
-        //Add(InMemoryTransport.PubSub, DataContractSerializer.Xml);
+        Add(InMemoryTransport.PubSub, DataContractSerializer.Json);
+        Add(InMemoryTransport.PubSub, DataContractSerializer.Xml);
         Add(InMemoryTransport.P2P, DataContractSerializer.Json);
         Add(InMemoryTransport.P2P, DataContractSerializer.Xml);
     }
 }
 
-public class PipelineTest
+public class PipelineTest : IDisposable
 {
     private readonly ITestOutputHelper _output;
     private readonly string _node = "test";
     private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+    private readonly int timeout = 2000;
     private int received = 0, send = 0;
 
     public PipelineTest(ITestOutputHelper output)
@@ -29,7 +29,12 @@ public class PipelineTest
         _output = output;
     }
 
-    [Theory(Skip = "Inspect send/receive")]
+    public void Dispose()
+    {
+        cancellationTokenSource.Dispose();
+    }
+
+    [Theory]
     [ClassData(typeof(TransportSerializerData))]
     public void ReceiverSenderTest(InMemoryTransport transport, DataContractSerializer serializer)
     {
@@ -54,14 +59,41 @@ public class PipelineTest
                                             .Pack(serializer)
                                             .SendTo(transport, _node))
                 {
-                    Task.Delay(1000, cancellationTokenSource.Token);
+                    try
+                    {
+                        Task.Delay(timeout, cancellationTokenSource.Token).Wait();
+                    }
+                    catch (AggregateException exception)
+                    {
+                        if (exception
+                                .InnerExceptions
+                                .Select(ex => ex.GetType())
+                                .Contains(typeof(TaskCanceledException)))
+                            _output.WriteLine("Sender successfully cancelled.");
+                        else
+                            throw exception;
+                    }
                 }
             
-                Task.Delay(1000, cancellationTokenSource.Token);
+                try
+                {
+                    Task.Delay(timeout, cancellationTokenSource.Token).Wait();
+                }
+                catch (AggregateException exception)
+                {
+                    if (exception
+                            .InnerExceptions
+                            .Select(ex => ex.GetType())
+                            .Contains(typeof(TaskCanceledException)))
+                        _output.WriteLine("Receiver successfully cancelled.");
+                    else
+                        throw exception;
+                }
             }
         }
 
         _output.WriteLine("Send: {0}, received: {1}", send, received);
+        Assert.True(send == received);
     }
 
     [Theory]
@@ -89,13 +121,43 @@ public class PipelineTest
                                                         	    , exception => _output.WriteLine(exception.Message)
                                                                 , () => cancellationTokenSource.Cancel()))
                 {
-                    Task.Delay(10000, cancellationTokenSource.Token);
+                    try
+                    {
+                        Task.Delay(timeout, cancellationTokenSource.Token).Wait();
+                    }
+                    catch (AggregateException exception)
+                    {
+                        if (exception
+                                .InnerExceptions
+                                .Select(ex => ex.GetType())
+                                .Contains(typeof(TaskCanceledException)))
+                            _output.WriteLine("Receiver successfully cancelled.");
+                        else
+                            throw exception;
+                    }
                 }
 
-                Task.Delay(10000, cancellationTokenSource.Token);
+                try
+                {
+                    Task.Delay(timeout, cancellationTokenSource.Token).Wait();
+                }
+                catch (AggregateException exception)
+                {
+                    if (exception
+                            .InnerExceptions
+                            .Select(ex => ex.GetType())
+                            .Contains(typeof(TaskCanceledException)))
+                        _output.WriteLine("Sender successfully cancelled.");
+                    else
+                        throw exception;
+                }
             }
         }
 
         _output.WriteLine("Send: {0}, received: {1}", send, received);
+        if (transport.ExchangePattern == InMemoryExchangePattern.PointToPoint)
+            Assert.True(send == received);
+        else
+            Assert.False(send == received);
     }
 }
